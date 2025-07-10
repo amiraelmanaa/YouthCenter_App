@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Center;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -16,11 +17,7 @@ class DashboardController extends AbstractDashboardController
 {
    public function index(): Response
 {
-    $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-
-    return $this->redirect(
-        $adminUrlGenerator->setController(CenterCrudController::class)->generateUrl()
-    );
+    return $this->render('admin/dashboard.html.twig');
 }
 
     public function configureDashboard(): Dashboard
@@ -32,6 +29,9 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-         yield MenuItem::linkToCrud('The Label', 'fas fa-list', Center::class);
+         yield MenuItem::linkToCrud('Center', 'fas fa-list', Center::class);
+         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
+         yield MenuItem::linkToRoute('Logout', 'fa fa-sign-out', 'app_logout');
+         
     }
 }
