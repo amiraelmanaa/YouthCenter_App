@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <h5 class="card-title">📍 Manage Centers</h5>
                         <p class="card-text">Add or edit youth center locations and details.</p>
-                        <a href="{{ path('admin') }}" class="btn btn-primary">Go to Centers</a>
+                        <a href="{{ center_crud_url }}" class="btn btn-primary">Go to Centers</a>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,17 @@
                     <div class="card-body">
                         <h5 class="card-title">👥 Manage Users</h5>
                         <p class="card-text">View or update user accounts and roles.</p>
-                        <a href="{{ path('admin_user_index') }}" class="btn btn-primary">Go to Users</a>
+                       <a href="{{ user_crud_url }}" class="btn btn-primary">Go to Users</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title"> Manage Activities</h5>
+                        <p class="card-text">View or update activities in each center.</p>
+                       <a href="{{ activities_crud_url }}" class="btn btn-primary">Go to Activities</a>
                     </div>
                 </div>
             </div>
