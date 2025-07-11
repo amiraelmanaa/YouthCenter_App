@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ActivitiesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ActivitiesRepository::class)]
@@ -18,6 +20,17 @@ class Activities
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $decription = null;
+
+    /**
+     * @var Collection<int, Center>
+     */
+    #[ORM\ManyToMany(targetEntity: Center::class, inversedBy: 'activities')]
+    private Collection $center_id;
+
+    public function __construct()
+    {
+        $this->center_id = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -55,4 +68,37 @@ class Activities
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Center>
+     */
+    public function getCenterId(): Collection
+    {
+        return $this->center_id;
+    }
+
+    public function addCenterId(Center $centerId): static
+    {
+        if (!$this->center_id->contains($centerId)) {
+            $this->center_id->add($centerId);
+        }
+
+        return $this;
+    }
+
+    public function removeCenterId(Center $centerId): static
+    {
+        $this->center_id->removeElement($centerId);
+
+        return $this;
+    }
+
+public function __toString(): string
+{
+    // Return a string representation of your activity
+    return $this->getName() ?? 'Activity #'.$this->getId();
+    // Or if you have a 'title' field: return $this->getTitle();
+}
+
+
 }

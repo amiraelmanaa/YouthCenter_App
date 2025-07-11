@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CenterRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CenterRepository::class)]
@@ -37,10 +39,27 @@ class Center
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
+    /**
+     * @var Collection<int, Activities>
+     */
+    #[ORM\ManyToMany(targetEntity: Activities::class, mappedBy: 'center_id')]
+    private Collection $activities;
+
+    public function __construct()
+    {
+        $this->activities = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+    
     public function getName(): string
     {
         return $this->name;
@@ -54,9 +73,9 @@ class Center
         return $this->country;
 }
  public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
+                            {
+                                return $this->phone;
+                            }
 
     public function setPhone(?string $phone): self
     {
@@ -120,5 +139,32 @@ class Center
     public function getCity(): string
     {
         return $this->city;
+    }
+
+    /**
+     * @return Collection<int, Activities>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(Activities $activity): static
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities->add($activity);
+            $activity->addCenterId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(Activities $activity): static
+    {
+        if ($this->activities->removeElement($activity)) {
+            $activity->removeCenterId($this);
+        }
+
+        return $this;
     }
 }
