@@ -45,6 +45,9 @@ class Center
     #[ORM\ManyToMany(targetEntity: Activities::class, mappedBy: 'center_id')]
     private Collection $activities;
 
+    #[ORM\OneToOne(inversedBy: 'center', cascade: ['persist', 'remove'])]
+    private ?CenterManager $Manager_ID = null;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
@@ -73,9 +76,9 @@ class Center
         return $this->country;
 }
  public function getPhone(): ?string
-                            {
-                                return $this->phone;
-                            }
+                                     {
+                                         return $this->phone;
+                                     }
 
     public function setPhone(?string $phone): self
     {
@@ -164,6 +167,18 @@ class Center
         if ($this->activities->removeElement($activity)) {
             $activity->removeCenterId($this);
         }
+
+        return $this;
+    }
+
+    public function getManagerID(): ?CenterManager
+    {
+        return $this->Manager_ID;
+    }
+
+    public function setManagerID(?CenterManager $Manager_ID): static
+    {
+        $this->Manager_ID = $Manager_ID;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Center;
 use App\Entity\User;
 use App\Entity\Activities;
+use App\Entity\CenterManager;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -44,6 +45,7 @@ class DashboardController extends AbstractDashboardController
          yield MenuItem::linkToCrud('Center', 'fas fa-list', Center::class);
          yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
          yield MenuItem::linkToCrud('Activities', 'fas fa-list', Activities::class);
+         yield MenuItem::linkToCrud('Centers managers', 'fas fa-list', CenterManager::class);
          yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');
          
     }

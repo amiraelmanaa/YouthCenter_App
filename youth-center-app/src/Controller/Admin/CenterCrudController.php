@@ -29,6 +29,7 @@ class CenterCrudController extends AbstractCrudController
             TextField::new('category'), 
             TextField::new('phone')->setRequired(false),
             TextField::new('email')->setRequired(false),
+            AssociationField::new('Manager_ID')->setRequired(false),
             AssociationField::new('activities'),
 
         ];
