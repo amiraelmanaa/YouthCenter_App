@@ -543,7 +543,13 @@
                 <li><a href="#support" class="nav-link">Support</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
-                <li><a href="/register" class="login-btn">Login</a></li>
+                <li>
+                {% if app.user %}
+                 <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
+                 {% else %}
+                  <a href="{{ path('app_register') }}" class="login-btn">Login</a>
+                  {% endif %}
+                </li>
             </ul>
             <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                 ☰
@@ -610,10 +616,9 @@
     <div class="container">
         <h2 class="section-title scroll-reveal">Book Your Space at Youth Centers Across Arab Countries</h2>
         <a href="{{ path('app_centerspage') }}" class="btn btn-primary" style="margin-top: 10px;">
-    Browse Youth Centers
+     <h2>  ➤ View all </h2>
 </a>
-  Browse Youth Centers
-</a>
+ 
         <div class="pricing-grid">
             <div class="pricing-card scroll-reveal">
                 <h3>Study Sessions</h3>
@@ -773,12 +778,28 @@
         });
 
         // Pricing buttons functionality
-        document.querySelectorAll('.pricing-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const plan = this.closest('.pricing-card').querySelector('h3').textContent;
-                alert(`You selected the ${plan} plan! Redirecting to checkout...`);
-            });
-        });
+document.querySelectorAll('.pricing-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const plan = this.closest('.pricing-card').querySelector('h3').textContent.trim();
+
+        // Redirect based on plan name
+        switch (plan.toLowerCase()) {
+            case 'basic':
+                window.location.href = '/catalogue/basic';
+                break;
+            case 'standard':
+                window.location.href = '/catalogue/standard';
+                break;
+            case 'premium':
+                window.location.href = '/catalogue/premium';
+                break;
+            default:
+                console.error('Unknown plan:', plan);
+                break;
+        }
+    });
+});
+
     </script>
 </body>
 </html>

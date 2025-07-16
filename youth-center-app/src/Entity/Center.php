@@ -48,6 +48,9 @@ class Center
     #[ORM\OneToOne(inversedBy: 'center', cascade: ['persist', 'remove'])]
     private ?CenterManager $Manager_ID = null;
 
+    #[ORM\Column]
+    private ?int $nb_rooms = null;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
@@ -76,9 +79,9 @@ class Center
         return $this->country;
 }
  public function getPhone(): ?string
-                                     {
-                                         return $this->phone;
-                                     }
+                                              {
+                                                  return $this->phone;
+                                              }
 
     public function setPhone(?string $phone): self
     {
@@ -179,6 +182,18 @@ class Center
     public function setManagerID(?CenterManager $Manager_ID): static
     {
         $this->Manager_ID = $Manager_ID;
+
+        return $this;
+    }
+
+    public function getNbRooms(): ?int
+    {
+        return $this->nb_rooms;
+    }
+
+    public function setNbRooms(int $nb_rooms): static
+    {
+        $this->nb_rooms = $nb_rooms;
 
         return $this;
     }

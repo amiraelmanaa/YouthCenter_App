@@ -27,6 +27,9 @@ class Activities
     #[ORM\ManyToMany(targetEntity: Center::class, inversedBy: 'activities')]
     private Collection $center_id;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $type = null;
+
     public function __construct()
     {
         $this->center_id = new ArrayCollection();
@@ -98,6 +101,18 @@ public function __toString(): string
     // Return a string representation of your activity
     return $this->getName() ?? 'Activity #'.$this->getId();
     // Or if you have a 'title' field: return $this->getTitle();
+}
+
+public function getType(): ?string
+{
+    return $this->type;
+}
+
+public function setType(?string $type): static
+{
+    $this->type = $type;
+
+    return $this;
 }
 
 
