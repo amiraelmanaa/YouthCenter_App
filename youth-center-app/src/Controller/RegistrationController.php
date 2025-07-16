@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
+
+    //todo make sure not everyone can  register as admin
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
@@ -23,14 +25,20 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
+    $user = $form->getData();
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+    $user->setPassword(
+        $userPasswordHasher->hashPassword(
+            $user,
+            $form->get('plainPassword')->getData()
+        )
+    );
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+
+    $user->setRoles([$form->get('roles')->getData()]);
+
+    $entityManager->persist($user);
+    $entityManager->flush();
 
             // do anything else you need here, like send an email
 

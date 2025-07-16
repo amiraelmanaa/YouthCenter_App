@@ -279,6 +279,15 @@
                     </ul>
                 </div>
             </div>
+            <div class="form-row">
+    {{ form_label(registrationForm.roles, 'Choose your role') }}
+    {{ form_widget(registrationForm.roles, {
+        'attr': {
+            'class': 'form-control'
+        }
+    }) }}
+    {{ form_errors(registrationForm.roles) }}
+</div>
             
             <div class="checkbox-group">
                 {{ form_widget(registrationForm.agreeTerms, {

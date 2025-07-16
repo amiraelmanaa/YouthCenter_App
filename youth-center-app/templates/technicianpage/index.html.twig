@@ -1,0 +1,493 @@
+{% extends 'base.html.twig' %}
+{% block title %}Technician Dashboard - Maintenance Assignments{% endblock %}
+{% block body %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+    
+    /* Navigation Bar */
+    .navbar {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 1rem 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .nav-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+    }
+    
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .nav-links a:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+    
+    .nav-links a.logout {
+        background-color: #dc2626;
+        color: white;
+    }
+    
+    .nav-links a.logout:hover {
+        background-color: #b91c1c;
+    }
+    
+    /* Main Content */
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .dashboard-header {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        border-left: 4px solid #1e3a8a;
+    }
+    
+    .dashboard-title {
+        color: #1e3a8a;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-subtitle {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    
+    .welcome-message {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .welcome-message h2 {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Assignments Section */
+    .assignments-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .section-header {
+        background: #1e3a8a;
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .refresh-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+    }
+    
+    .refresh-btn:hover {
+        background: #2563eb;
+    }
+    
+    /* Grid Layout */
+    .assignments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+    
+    .assignment-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+    
+    .assignment-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border-color: #3b82f6;
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .center-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+    }
+    
+    .priority-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    
+    .priority-high {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .priority-medium {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .priority-low {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .card-details {
+        color: #64748b;
+        margin-bottom: 1rem;
+    }
+    
+    .card-details p {
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-details strong {
+        color: #374151;
+    }
+    
+    .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-primary {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #2563eb;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+    }
+    
+    /* Status Indicators */
+    .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+    
+    .status-pending {
+        background: #f59e0b;
+    }
+    
+    .status-in-progress {
+        background: #3b82f6;
+    }
+    
+    .status-urgent {
+        background: #dc2626;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #64748b;
+    }
+    
+    .empty-state h3 {
+        margin-bottom: 1rem;
+        color: #374151;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .nav-links {
+            gap: 1rem;
+        }
+        
+        .main-container {
+            padding: 1rem;
+        }
+        
+        .assignments-grid {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+        
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="#" class="nav-brand">YouthCenter Maintenance</a>
+        <ul class="nav-links">
+            <li><a href="{{ path('home') }}">Home</a></li>
+            <li> {#<a href="{{ path('support') }}">Support</a>#} </li>
+            <li><a href="{{ path('app_logout') }}" class="logout">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Technician Dashboard</h1>
+        <p class="dashboard-subtitle">Manage maintenance assignments and track center status</p>
+    </div>
+    
+    <div class="welcome-message">
+        <h2>Welcome back, {{ controller_name }}!</h2>
+        <p>You have pending maintenance assignments that require your attention.</p>
+    </div>
+    
+    <div class="assignments-section">
+        <div class="section-header">
+            <h2 class="section-title">Maintenance Assignments</h2>
+            <button class="refresh-btn" onclick="location.reload()">Refresh</button>
+        </div>
+        
+        <div class="assignments-grid">
+            <!-- Empty assignment cards - ready for your data -->
+            <div class="assignment-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="center-name">Center Name</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            <span class="status-indicator status-pending"></span>
+                            Status: Pending
+                        </p>
+                    </div>
+                    <span class="priority-badge priority-medium">Medium Priority</span>
+                </div>
+                <div class="card-details">
+                    <p><strong>Issue:</strong> Description of the issue</p>
+                    <p><strong>Location:</strong> Center address</p>
+                    <p><strong>Reported:</strong> Time reported</p>
+                    <p><strong>Contact:</strong> Contact person and phone</p>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Accept Task</a>
+                </div>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="center-name">Center Name</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            <span class="status-indicator status-urgent"></span>
+                            Status: Urgent
+                        </p>
+                    </div>
+                    <span class="priority-badge priority-high">High Priority</span>
+                </div>
+                <div class="card-details">
+                    <p><strong>Issue:</strong> Description of the issue</p>
+                    <p><strong>Location:</strong> Center address</p>
+                    <p><strong>Reported:</strong> Time reported</p>
+                    <p><strong>Contact:</strong> Contact person and phone</p>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Accept Task</a>
+                </div>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="center-name">Center Name</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            <span class="status-indicator status-in-progress"></span>
+                            Status: In Progress
+                        </p>
+                    </div>
+                    <span class="priority-badge priority-low">Low Priority</span>
+                </div>
+                <div class="card-details">
+                    <p><strong>Issue:</strong> Description of the issue</p>
+                    <p><strong>Location:</strong> Center address</p>
+                    <p><strong>Reported:</strong> Time reported</p>
+                    <p><strong>Contact:</strong> Contact person and phone</p>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Update Status</a>
+                </div>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="center-name">Center Name</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            <span class="status-indicator status-pending"></span>
+                            Status: Pending
+                        </p>
+                    </div>
+                    <span class="priority-badge priority-medium">Medium Priority</span>
+                </div>
+                <div class="card-details">
+                    <p><strong>Issue:</strong> Description of the issue</p>
+                    <p><strong>Location:</strong> Center address</p>
+                    <p><strong>Reported:</strong> Time reported</p>
+                    <p><strong>Contact:</strong> Contact person and phone</p>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Accept Task</a>
+                </div>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="center-name">Center Name</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            <span class="status-indicator status-urgent"></span>
+                            Status: Urgent
+                        </p>
+                    </div>
+                    <span class="priority-badge priority-high">High Priority</span>
+                </div>
+                <div class="card-details">
+                    <p><strong>Issue:</strong> Description of the issue</p>
+                    <p><strong>Location:</strong> Center address</p>
+                    <p><strong>Reported:</strong> Time reported</p>
+                    <p><strong>Contact:</strong> Contact person and phone</p>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Accept Task</a>
+                </div>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="center-name">Center Name</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            <span class="status-indicator status-in-progress"></span>
+                            Status: In Progress
+                        </p>
+                    </div>
+                    <span class="priority-badge priority-low">Low Priority</span>
+                </div>
+                <div class="card-details">
+                    <p><strong>Issue:</strong> Description of the issue</p>
+                    <p><strong>Location:</strong> Center address</p>
+                    <p><strong>Reported:</strong> Time reported</p>
+                    <p><strong>Contact:</strong> Contact person and phone</p>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Update Status</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
