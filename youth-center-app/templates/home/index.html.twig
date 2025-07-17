@@ -6,6 +6,184 @@
     <title-/title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
     <style>
+ 
+    /* Centers Showcase Styles */
+    .centers-showcase {
+        padding: 5rem 0;
+        background: #ffffff;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .section-subtitle {
+        text-align: center;
+        color: #717171;
+        margin-bottom: 3rem;
+        font-size: 1.25rem;
+    }
+    
+    .centers-container {
+        position: relative;
+        max-width: 100%;
+        overflow: hidden;
+        padding: 1rem 0;
+    }
+    
+    .centers-grid {
+        display: flex;
+        gap: 1.5rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 1rem 0;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    .centers-grid::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+    
+    .center-card {
+        flex: 0 0 300px;
+        scroll-snap-align: start;
+        transition: all 0.3s ease;
+    }
+    
+    .center-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .center-image {
+        position: relative;
+        height: 350px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .center-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .center-card:hover .center-image img {
+        transform: scale(1.05);
+    }
+    
+    .center-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(67, 0, 255, 0.9), transparent);
+        color: white;
+        padding: 2rem 1.5rem 1.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+    
+    .center-card:hover .center-overlay {
+        opacity: 1;
+    }
+    
+    .center-overlay h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .center-overlay p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+    
+    .center-btn {
+        display: inline-block;
+        background: white;
+        color: #4300FF;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        align-self: flex-start;
+    }
+    
+    .center-btn:hover {
+        background: #f0f0f0;
+        transform: translateY(-2px);
+    }
+    
+    .centers-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+    }
+    
+    .nav-arrow {
+        background: #4300FF;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-arrow:hover {
+        background: #3a00d6;
+        transform: scale(1.1);
+    }
+    
+    .view-all-btn {
+        background: transparent;
+        color: #4300FF;
+        padding: 0.5rem 1.5rem;
+        border: 2px solid #4300FF;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .view-all-btn:hover {
+        background: #4300FF;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .center-card {
+            flex: 0 0 85%;
+        }
+        
+        .centers-navigation {
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .nav-arrow {
+            width: 35px;
+            height: 35px;
+            font-size: 1.2rem;
+        }
+    }
+
+
+
         * {
             margin: 0;
             padding: 0;
@@ -569,55 +747,77 @@
         </div>
     </section>
 
-    <!-- Features Section -->
- 
-<section class="features" id="features">
+<!-- Centers Showcase Section -->
+<section class="centers-showcase" id="centers">
     <div class="container">
-        <h2 class="section-title scroll-reveal">Why Choose Our Platform?</h2>
-        <div class="features-grid">
-            <div class="feature-card scroll-reveal">
-                <div class="feature-icon">📊</div>
-                <h3>Centralized Management</h3>
-                <p>Unify youth center operations, events, and records across regions in one secure and centralized platform.</p>
+        <h2 class="section-title scroll-reveal">Explore Our Youth Centers</h2>
+        <p class="section-subtitle scroll-reveal">Discover vibrant spaces across the Arab world</p>
+        
+        <div class="centers-container">
+            <div class="centers-grid">
+                <!-- Center Card 1 -->
+                <div class="center-card scroll-reveal">
+                    <div class="center-image">
+                        <img src="https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Cairo Youth Center">
+                        <div class="center-overlay">
+                            <h3>Cairo Youth Center</h3>
+                            <p>Modern facility with study rooms, activity spaces, and lodging for up to 50 youth</p>
+                            <a href="#" class="center-btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Center Card 2 -->
+                <div class="center-card scroll-reveal">
+                    <div class="center-image">
+                        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dubai Youth Hub">
+                        <div class="center-overlay">
+                            <h3>Dubai Youth Hub</h3>
+                            <p>State-of-the-art technology center with innovation labs and co-working spaces</p>
+                            <a href="#" class="center-btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Center Card 3 -->
+                <div class="center-card scroll-reveal">
+                    <div class="center-image">
+                        <img src="https://images.unsplash.com/photo-1508317469940-e3de49ba902e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Amman Cultural Center">
+                        <div class="center-overlay">
+                            <h3>Amman Cultural Center</h3>
+                            <p>Traditional architecture with modern amenities, focusing on arts and heritage</p>
+                            <a href="#" class="center-btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Center Card 4 -->
+                <div class="center-card scroll-reveal">
+                    <div class="center-image">
+                        <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Riyadh Innovation Space">
+                        <div class="center-overlay">
+                            <h3>Riyadh Innovation Space</h3>
+                            <p>Entrepreneurship-focused center with startup incubator and mentorship programs</p>
+                            <a href="#" class="center-btn">View Details</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="feature-card scroll-reveal">
-                <div class="feature-icon">🔐</div>
-                <h3>Data Privacy & Security</h3>
-                <p>Robust data encryption and user authentication ensure that sensitive information remains protected.</p>
-            </div>
-            <div class="feature-card scroll-reveal">
-              <div class="feature-icon">🏠</div>
-                <h3>Comfortable Lodging for Youth</h3>
-                <p>Our centers provide safe and welcoming accommodations, with shared or private rooms tailored to the needs of young people in transition or travel.</p>
-            </div>
-            <div class="feature-card scroll-reveal">
-                <div class="feature-icon">🌐</div>
-                <h3>Multilingual Support</h3>
-                <p>Designed to support Arabic and English, ensuring accessibility for all users across the Arab world.</p>
-            </div>
-            <div class="feature-card scroll-reveal">
-                <div class="feature-icon">🧑‍🤝‍🧑</div>
-                <h3>Collaboration Tools</h3>
-                <p>Facilitate program coordination, youth engagement, and staff collaboration through built-in tools.</p>
-            </div>
-            <div class="feature-card scroll-reveal">
-                <div class="feature-icon">📆</div>
-                <h3>Event & Program Scheduling</h3>
-                <p>Easily create, manage, and share educational, cultural, and social activities across all connected centers.</p>
+            
+            <div class="centers-navigation">
+                <button class="nav-arrow left-arrow" aria-label="Previous centers">‹</button>
+                <a href="{{ path('app_centerspage') }}" class="view-all-btn">View All Centers ➔</a>
+                <button class="nav-arrow right-arrow" aria-label="Next centers">›</button>
             </div>
         </div>
     </div>
 </section>
 
 
-
 <!-- Pricing Section -->
 <section class="pricing" id="pricing">
     <div class="container">
         <h2 class="section-title scroll-reveal">Book Your Space at Youth Centers Across Arab Countries</h2>
-        <a href="{{ path('app_centerspage') }}" class="btn btn-primary" style="margin-top: 10px;">
-     <h2>  ➤ View all </h2>
-</a>
  
         <div class="pricing-grid">
             <div class="pricing-card scroll-reveal">
@@ -664,6 +864,47 @@
         </div>
     </div>
 </section>
+
+ <!-- Features Section -->
+ 
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title scroll-reveal">Why Choose Our Platform?</h2>
+        <div class="features-grid">
+            <div class="feature-card scroll-reveal">
+                <div class="feature-icon">📊</div>
+                <h3>Centralized Management</h3>
+                <p>Unify youth center operations, events, and records across regions in one secure and centralized platform.</p>
+            </div>
+            <div class="feature-card scroll-reveal">
+                <div class="feature-icon">🔐</div>
+                <h3>Data Privacy & Security</h3>
+                <p>Robust data encryption and user authentication ensure that sensitive information remains protected.</p>
+            </div>
+            <div class="feature-card scroll-reveal">
+              <div class="feature-icon">🏠</div>
+                <h3>Comfortable Lodging for Youth</h3>
+                <p>Our centers provide safe and welcoming accommodations, with shared or private rooms tailored to the needs of young people in transition or travel.</p>
+            </div>
+            <div class="feature-card scroll-reveal">
+                <div class="feature-icon">🌐</div>
+                <h3>Multilingual Support</h3>
+                <p>Designed to support Arabic and English, ensuring accessibility for all users across the Arab world.</p>
+            </div>
+            <div class="feature-card scroll-reveal">
+                <div class="feature-icon">🧑‍🤝‍🧑</div>
+                <h3>Collaboration Tools</h3>
+                <p>Facilitate program coordination, youth engagement, and staff collaboration through built-in tools.</p>
+            </div>
+            <div class="feature-card scroll-reveal">
+                <div class="feature-icon">📆</div>
+                <h3>Event & Program Scheduling</h3>
+                <p>Easily create, manage, and share educational, cultural, and social activities across all connected centers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 
 
@@ -799,7 +1040,41 @@ document.querySelectorAll('.pricing-btn').forEach(btn => {
         }
     });
 });
-
+    // Centers carousel navigation
+    document.addEventListener('DOMContentLoaded', function() {
+        const centersGrid = document.querySelector('.centers-grid');
+        const leftArrow = document.querySelector('.left-arrow');
+        const rightArrow = document.querySelector('.right-arrow');
+        
+        if (centersGrid && leftArrow && rightArrow) {
+            leftArrow.addEventListener('click', () => {
+                centersGrid.scrollBy({
+                    left: -300,
+                    behavior: 'smooth'
+                });
+            });
+            
+            rightArrow.addEventListener('click', () => {
+                centersGrid.scrollBy({
+                    left: 300,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // Add hover effect to center cards
+        document.querySelectorAll('.center-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+                this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+            });
+        });
+    });
     </script>
 </body>
 </html>

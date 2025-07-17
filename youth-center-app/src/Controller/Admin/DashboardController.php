@@ -25,11 +25,14 @@ class DashboardController extends AbstractDashboardController
     $userUrl = $adminUrlGenerator->setController(UserCrudController::class)->generateUrl();
     $activitiesUrl = $adminUrlGenerator->setController(ActivitiesCrudController::class)->generateUrl();
     $centerUrl = $adminUrlGenerator->setController(CenterCrudController::class)->generateUrl();
+    $centermanagerUrl = $adminUrlGenerator->setController(CenterManagerCrudController::class)->generateUrl();
+    
 
     return $this->render('admin/dashboard.html.twig', [
         'user_crud_url' => $userUrl,
         'activities_crud_url' => $activitiesUrl,
         'center_crud_url' => $centerUrl,
+        'centermanager_crud_url' => $centermanagerUrl,
     ]);
 }
 
