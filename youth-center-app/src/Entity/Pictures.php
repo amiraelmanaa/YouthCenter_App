@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Entity;
-
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 use App\Repository\PicturesRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: PicturesRepository::class)]
+
 class Pictures
 {
     #[ORM\Id]
@@ -13,8 +15,7 @@ class Pictures
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $URL = null;
+  
 
     #[ORM\ManyToOne(inversedBy: 'pictures')]
     private ?Center $Center_ID = null;
@@ -31,17 +32,7 @@ class Pictures
         return $this;
     }
 
-    public function getURL(): ?string
-    {
-        return $this->URL;
-    }
-
-    public function setURL(string $URL): static
-    {
-        $this->URL = $URL;
-
-        return $this;
-    }
+    
 
     public function getCenterID(): ?Center
     {
@@ -54,4 +45,49 @@ class Pictures
 
         return $this;
     }
+
+     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $imageName = null;
+
+    #[Vich\UploadableField(mapping: 'center_images', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+        if ($imageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+    public function __toString(): string
+    {
+        return $this->imageName ?? 'No Image';
+    }
+    
 }
