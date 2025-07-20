@@ -51,9 +51,16 @@ class Center
     #[ORM\Column]
     private ?int $nb_rooms = null;
 
+    /**
+     * @var Collection<int, Pictures>
+     */
+    #[ORM\OneToMany(targetEntity: Pictures::class, mappedBy: 'Center_ID')]
+    private Collection $pictures;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,9 +86,9 @@ class Center
         return $this->country;
 }
  public function getPhone(): ?string
-                                              {
-                                                  return $this->phone;
-                                              }
+                                                             {
+                                                                 return $this->phone;
+                                                             }
 
     public function setPhone(?string $phone): self
     {
@@ -194,6 +201,36 @@ class Center
     public function setNbRooms(int $nb_rooms): static
     {
         $this->nb_rooms = $nb_rooms;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pictures>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Pictures $picture): static
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures->add($picture);
+            $picture->setCenterID($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Pictures $picture): static
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getCenterID() === $this) {
+                $picture->setCenterID(null);
+            }
+        }
 
         return $this;
     }

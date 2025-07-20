@@ -6,6 +6,7 @@ use App\Entity\Center;
 use App\Entity\User;
 use App\Entity\Activities;
 use App\Entity\CenterManager;
+use App\Entity\Pictures;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -26,6 +27,7 @@ class DashboardController extends AbstractDashboardController
     $activitiesUrl = $adminUrlGenerator->setController(ActivitiesCrudController::class)->generateUrl();
     $centerUrl = $adminUrlGenerator->setController(CenterCrudController::class)->generateUrl();
     $centermanagerUrl = $adminUrlGenerator->setController(CenterManagerCrudController::class)->generateUrl();
+    $picturesUrl = $adminUrlGenerator->setController(PicturesCrudController::class)->generateUrl();
     
 
     return $this->render('admin/dashboard.html.twig', [
@@ -33,6 +35,7 @@ class DashboardController extends AbstractDashboardController
         'activities_crud_url' => $activitiesUrl,
         'center_crud_url' => $centerUrl,
         'centermanager_crud_url' => $centermanagerUrl,
+        'pictures_crud_url' => $picturesUrl,
     ]);
 }
 
@@ -49,7 +52,9 @@ class DashboardController extends AbstractDashboardController
          yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
          yield MenuItem::linkToCrud('Activities', 'fas fa-list', Activities::class);
          yield MenuItem::linkToCrud('Centers managers', 'fas fa-list', CenterManager::class);
+         yield MenuItem::linkToCrud('Pictures', 'fas fa-image', Pictures::class);
          yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');
+        
          
     }
 }
