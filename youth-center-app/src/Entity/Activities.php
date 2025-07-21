@@ -25,14 +25,14 @@ class Activities
      * @var Collection<int, Center>
      */
     #[ORM\ManyToMany(targetEntity: Center::class, inversedBy: 'activities')]
-    private Collection $center_id;
+    private Collection $centers;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
     public function __construct()
     {
-        $this->center_id = new ArrayCollection();
+        $this->centers = new ArrayCollection();
     }
 
 
@@ -75,23 +75,23 @@ class Activities
     /**
      * @return Collection<int, Center>
      */
-    public function getCenterId(): Collection
+    public function getCenters(): Collection
     {
-        return $this->center_id;
+        return $this->centers;
     }
 
-    public function addCenterId(Center $centerId): static
+    public function addCenter(Center $centerId): static
     {
-        if (!$this->center_id->contains($centerId)) {
-            $this->center_id->add($centerId);
+        if (!$this->centers->contains($centerId)) {
+            $this->centers->add($centerId);
         }
 
         return $this;
     }
 
-    public function removeCenterId(Center $centerId): static
+    public function removeCenter(Center $centerId): static
     {
-        $this->center_id->removeElement($centerId);
+        $this->centers->removeElement($centerId);
 
         return $this;
     }

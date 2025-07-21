@@ -42,7 +42,7 @@ class Center
     /**
      * @var Collection<int, Activities>
      */
-    #[ORM\ManyToMany(targetEntity: Activities::class, mappedBy: 'center_id')]
+    #[ORM\ManyToMany(targetEntity: Activities::class, mappedBy: 'centers')]
     private Collection $activities;
 
     #[ORM\OneToOne(inversedBy: 'center', cascade: ['persist', 'remove'])]
@@ -166,7 +166,7 @@ class Center
     {
         if (!$this->activities->contains($activity)) {
             $this->activities->add($activity);
-            $activity->addCenterId($this);
+            $activity->addCenter($this);
         }
 
         return $this;
@@ -175,7 +175,7 @@ class Center
     public function removeActivity(Activities $activity): static
     {
         if ($this->activities->removeElement($activity)) {
-            $activity->removeCenterId($this);
+            $activity->removeCenter($this);
         }
 
         return $this;
@@ -234,4 +234,8 @@ class Center
 
         return $this;
     }
+    public function __toString(): string
+    {
+        return $this->name;
+}
 }

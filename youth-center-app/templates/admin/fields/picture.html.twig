@@ -1,0 +1,6 @@
+{# filepath: c:\Users\el_ma\OneDrive\Bureau\youth_app\YouthCenter_App\youth-center-app\templates\admin\fields\picture.html.twig #}
+{% if field.value %}
+    <img src="{{ asset(field.value) }}" alt="Picture" style="max-width: 200px; max-height: 200px;" />
+{% else %}
+    <span>No picture available</span>
+{% endif %}

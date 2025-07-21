@@ -89,5 +89,16 @@ class Pictures
     {
         return $this->imageName ?? 'No Image';
     }
-    
+    private ?string $imagePath = null;
+
+public function getImagePath(): ?string
+{
+    return $this->imagePath;
+}
+
+public function setImagePath(?string $imagePath): self
+{
+    $this->imagePath = $imagePath;
+    return $this;
+}
 }

@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 
 class PicturesCrudController extends AbstractCrudController
 {
@@ -15,14 +17,20 @@ class PicturesCrudController extends AbstractCrudController
         return Pictures::class;
     }
 
-    /*
+    
+   
     public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
-    }
-    */
+{
+    return [
+        TextField::new('imageName', 'Image Name')
+            ->setRequired(true)
+            ->setHelp('Enter the name of the image file.'),
+        AssociationField::new('Center_ID', 'Center')
+            ->setRequired(true),
+         ImageField::new('imageName', 'Picture')
+            ->setBasePath('') 
+            ->setUploadDir('public/') 
+            ->setRequired(true),
+    ];
+}
 }
