@@ -448,7 +448,11 @@
             transition: all 0.2s ease;
             box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1);
         }
-
+.center-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
         .activity-tag:hover {
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
             transform: translateY(-1px);
@@ -610,7 +614,7 @@
                         <div class="center-card">
                            {% set image = center.pictures|first %}
 {% if image and image.imageName %}
-    <img src="{{ asset(image.imageName) }}" alt="{{ center.name }}" class="center-image">
+    <a href="{{ path('app_centerdetails', {id: center.id}) }}"> <img src="{{ asset(image.imageName) }}" alt="{{ center.name }}" class="center-image"> </a>
 {% else %}
     <div class="image-placeholder">
         <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -8,11 +8,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CenterspageController extends AbstractController
 {
     #[Route('/centerspage', name: 'app_centerspage')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator): Response
     {
         $country = $request->query->get('country');
         $city = $request->query->get('city');
@@ -34,16 +35,22 @@ final class CenterspageController extends AbstractController
        ->andWhere('a.name = :activity')
        ->setParameter('activity', $activity);
 }
+    $centers = $qb->getQuery()->getResult();
 
-        $centers = $qb->getQuery()->getResult();
-
-        return $this->render('centerspage/index.html.twig', [
-            'centers' => $centers,
-            'filters' => [
-                'country' => $country,
-                'city' => $city,
-                'activity' => $activity
-            ]
+    //  URLs for each center
+    foreach ($centers as $center) {
+        $center->url = $urlGenerator->generate('app_centerdetails', [
+            'id' => $center->getId(),
         ]);
+    }
+
+    return $this->render('centerspage/index.html.twig', [
+        'centers' => $centers,
+        'filters' => [
+            'country' => $country,
+            'city' => $city,
+            'activity' => $activity,
+        ]
+    ]);
     }
 }
