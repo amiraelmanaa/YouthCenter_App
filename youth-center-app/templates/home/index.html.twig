@@ -236,7 +236,7 @@
         }
 
         .logo-icon {
-            width: 32px;
+            width: 55px;
             height: 32px;
             margin-right: 0.5rem;
             background: linear-gradient(135deg,rgb(90, 107, 255),rgb(70, 68, 236));
@@ -711,15 +711,14 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <div class="logo-icon">IT</div>
-                ---
+                <div class="logo-icon">Arab</div>
+                Youth Centers
             </a>
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="#home" class="nav-link">Home</a></li>
                 <li><a href="#features" class="nav-link">Features</a></li>
                 <li><a href="#pricing" class="nav-link">Pricing</a></li>
-                <li><a href="#support" class="nav-link">Support</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="{{ path('app_about') }}" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
                 <li>
                 {% if app.user %}
