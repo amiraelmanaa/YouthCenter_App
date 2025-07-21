@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youth Centers - Find Your Perfect Community Space</title>
+    <title> Arab Youth Centers - Find Your Perfect Community Space</title>
     <style>
         * {
             margin: 0;
@@ -12,26 +12,85 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
+        }
+
+        /* Animated Background Elements */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(30, 58, 138, 0.1), rgba(59, 130, 246, 0.05));
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -7s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            25% { transform: translateY(-30px) rotate(90deg); opacity: 0.5; }
+            50% { transform: translateY(0px) rotate(180deg); opacity: 0.3; }
+            75% { transform: translateY(20px) rotate(270deg); opacity: 0.4; }
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #1d4ed8 75%, #1e3a8a 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
             color: white;
-            padding: 60px 0;
+            padding: 80px 0;
             text-align: center;
             position: relative;
             overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .header::before {
@@ -41,141 +100,266 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="white" opacity="0.1"/><circle cx="40" cy="80" r="1.5" fill="white" opacity="0.1"/></svg>');
-            animation: float 20s infinite linear;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            animation: shimmer 6s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
         .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
             position: relative;
             z-index: 1;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideInDown 1s ease-out;
         }
 
         .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.3rem;
+            opacity: 0.95;
             position: relative;
             z-index: 1;
+            font-weight: 400;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* Filter Section */
         .filter-section {
-            background: white;
-            padding: 40px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 48px 0;
+            box-shadow: 
+                0 20px 40px rgba(30, 58, 138, 0.1),
+                0 1px 0px rgba(255,255,255,0.8) inset;
             position: relative;
             z-index: 10;
-            margin-top: -30px;
-            border-radius: 16px;
-            margin-left: 20px;
-            margin-right: 20px;
+            margin-top: -40px;
+            border-radius: 24px;
+            margin-left: 24px;
+            margin-right: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: slideInUp 0.8s ease-out 0.6s both;
         }
 
         .filter-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
             align-items: end;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .filter-group label {
             font-weight: 600;
-            margin-bottom: 8px;
-            color: #374151;
-            font-size: 0.9rem;
+            margin-bottom: 12px;
+            color: #334155;
+            font-size: 0.95rem;
+            letter-spacing: 0.025em;
         }
 
         .filter-group input {
-            padding: 12px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: white;
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .filter-group input:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #1e40af;
+            box-shadow: 
+                0 0 0 4px rgba(30, 64, 175, 0.1),
+                0 4px 12px rgba(30, 64, 175, 0.15);
+            transform: translateY(-1px);
         }
 
         .filter-button {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 25px rgba(30, 58, 138, 0.3),
+                0 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 0.025em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .filter-button:hover::before {
+            left: 100%;
         }
 
         .filter-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            box-shadow: 
+                0 12px 35px rgba(30, 58, 138, 0.4),
+                0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .filter-button:active {
+            transform: translateY(0px);
         }
 
         /* Results Section */
         .results-section {
-            padding: 60px 0;
+            padding: 80px 0;
         }
 
         .results-header {
-            margin-bottom: 40px;
+            margin-bottom: 48px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 1s both;
         }
 
         .results-count {
             font-size: 1.1rem;
-            color: #6b7280;
-            margin-bottom: 10px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 500;
         }
 
         .results-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #111827;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .results-subtitle {
+            font-size: 1.1rem;
+            color: #475569;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Center Grid */
         .centers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 32px;
         }
 
         .center-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
+            box-shadow: 
+                0 10px 40px rgba(0,0,0,0.08),
+                0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .center-card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .center-card:nth-child(3n) {
+            animation-delay: 0.2s;
         }
 
         .center-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 25px 50px rgba(30, 58, 138, 0.15),
+                0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .center-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .center-card:hover .center-image {
+            transform: scale(1.05);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmerPlaceholder 2s infinite;
+        }
+
+        @keyframes shimmerPlaceholder {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .center-header {
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            padding: 24px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 28px;
             position: relative;
         }
 
@@ -186,37 +370,46 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            background: linear-gradient(90deg, #1e3a8a, #1e40af, #3b82f6);
         }
 
         .center-name {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #1e40af;
+            color: #1e3a8a;
             margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .center-body {
-            padding: 24px;
+            padding: 28px;
         }
 
         .center-info {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         .info-item {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .info-item:hover {
+            background-color: #f8fafc;
         }
 
         .info-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             flex-shrink: 0;
             margin-top: 2px;
+            color: #1e40af;
         }
 
         .info-content {
@@ -226,79 +419,154 @@
         .info-label {
             font-weight: 600;
             color: #374151;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            letter-spacing: 0.025em;
         }
 
         .info-value {
-            color: #6b7280;
+            color: #4b5563;
             font-size: 1rem;
+            font-weight: 500;
         }
 
         .activities-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
+            margin-top: 4px;
         }
 
         .activity-tag {
-            background: #eff6ff;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
             color: #1e40af;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
             border: 1px solid #bfdbfe;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .activity-tag:hover {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
         }
 
         .no-results {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 32px;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .no-results-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            opacity: 0.5;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+            opacity: 0.4;
+            color: #64748b;
         }
 
         .no-results h3 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: #374151;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            font-weight: 700;
         }
 
         .no-results p {
             color: #6b7280;
             font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header {
+                padding: 60px 0;
+            }
+
             .header h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+
+            .filter-section {
+                margin-left: 16px;
+                margin-right: 16px;
+                padding: 32px 0;
             }
 
             .filter-form {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
 
             .centers-grid {
                 grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .center-card {
+                margin: 0 4px;
+            }
+
+            .results-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
             }
 
             .filter-section {
-                margin-left: 10px;
-                margin-right: 10px;
+                margin-left: 12px;
+                margin-right: 12px;
+            }
+
+            .center-header,
+            .center-body {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="background-animation">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
     <div class="header">
         <div class="container">
             <h1>Youth Centers</h1>
@@ -333,20 +601,31 @@
             <div class="results-header">
                 <div class="results-count">{{ centers|length }} centers found</div>
                 <h2 class="results-title">Youth Centers Near You</h2>
+                <p class="results-subtitle">Connect with vibrant communities and discover opportunities for growth, learning, and friendship</p>
             </div>
 
             {% if centers %}
                 <div class="centers-grid">
                     {% for center in centers %}
                         <div class="center-card">
+                           {% set image = center.pictures|first %}
+{% if image and image.imageName %}
+    <img src="{{ asset(image.imageName) }}" alt="{{ center.name }}" class="center-image">
+{% else %}
+    <div class="image-placeholder">
+        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+    </div>
+{% endif %}
                             <div class="center-header">
                                 <h3 class="center-name">{{ center.name }}</h3>
                             </div>
                             <div class="center-body">
                                 <div class="center-info">
                                     <div class="info-item">
-                                        <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                        <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         <div class="info-content">
                                             <div class="info-label">Country</div>
@@ -354,8 +633,9 @@
                                         </div>
                                     </div>
                                     <div class="info-item">
-                                        <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                        <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         </svg>
                                         <div class="info-content">
                                             <div class="info-label">City</div>
@@ -363,8 +643,8 @@
                                         </div>
                                     </div>
                                     <div class="info-item">
-                                        <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                         </svg>
                                         <div class="info-content">
                                             <div class="info-label">Activities</div>

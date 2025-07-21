@@ -755,53 +755,22 @@
         
         <div class="centers-container">
             <div class="centers-grid">
-                <!-- Center Card 1 -->
-                <div class="center-card scroll-reveal">
-                    <div class="center-image">
-                        <img src="https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Cairo Youth Center">
-                        <div class="center-overlay">
-                            <h3>Cairo Youth Center</h3>
-                            <p>Modern facility with study rooms, activity spaces, and lodging for up to 50 youth</p>
-                            <a href="#" class="center-btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Center Card 2 -->
-                <div class="center-card scroll-reveal">
-                    <div class="center-image">
-                        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dubai Youth Hub">
-                        <div class="center-overlay">
-                            <h3>Dubai Youth Hub</h3>
-                            <p>State-of-the-art technology center with innovation labs and co-working spaces</p>
-                            <a href="#" class="center-btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Center Card 3 -->
-                <div class="center-card scroll-reveal">
-                    <div class="center-image">
-                        <img src="https://images.unsplash.com/photo-1508317469940-e3de49ba902e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Amman Cultural Center">
-                        <div class="center-overlay">
-                            <h3>Amman Cultural Center</h3>
-                            <p>Traditional architecture with modern amenities, focusing on arts and heritage</p>
-                            <a href="#" class="center-btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Center Card 4 -->
-                <div class="center-card scroll-reveal">
-                    <div class="center-image">
-                        <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Riyadh Innovation Space">
-                        <div class="center-overlay">
-                            <h3>Riyadh Innovation Space</h3>
-                            <p>Entrepreneurship-focused center with startup incubator and mentorship programs</p>
-                            <a href="#" class="center-btn">View Details</a>
-                        </div>
-                    </div>
-                </div>
+                {% for center in centers %}
+    <div class="center-card scroll-reveal">
+        <div class="center-image">
+            {# Display the first picture if available, else show a default image #}
+            {% set image = center.pictures|first %}
+            <img src="{% if image and image.imageName %}{{ asset(image.imageName) }}{% else %}{{ asset('default-center.jpg') }}{% endif %}"
+     alt="{{ center.name|e }}">
+            <div class="center-overlay">
+                <h2>{{center.name}}</h2>
+                <p>{{ center.description }}</p>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p>No centers available at the moment.</p>
+{% endfor %}
             </div>
             
             <div class="centers-navigation">
@@ -812,6 +781,7 @@
         </div>
     </div>
 </section>
+
 
 
 <!-- Pricing Section -->

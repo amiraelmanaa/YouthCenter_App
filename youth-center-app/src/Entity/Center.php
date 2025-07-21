@@ -226,7 +226,7 @@ class Center
     public function removePicture(Pictures $picture): static
     {
         if ($this->pictures->removeElement($picture)) {
-            // set the owning side to null (unless already changed)
+            
             if ($picture->getCenterID() === $this) {
                 $picture->setCenterID(null);
             }
