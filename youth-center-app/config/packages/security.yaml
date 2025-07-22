@@ -21,6 +21,13 @@ security:
             logout:
                 path: app_logout
                 target: home
+            entry_point: form_login    
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                success_handler: App\Security\LoginSuccessHandler
+               
+            
            
 
             remember_me:
