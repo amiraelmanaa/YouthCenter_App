@@ -31,6 +31,7 @@ class RegistrationFormType extends AbstractType
             'Simple User' => 'ROLE_USER',
             'Technician' => 'ROLE_TECHNICIAN',
             'Center Manager' => 'ROLE_CENTERMANAGER',
+            'Admin ' => 'ROLE_ADMIN'
         ],
         'expanded' => false,
         'multiple' => true,

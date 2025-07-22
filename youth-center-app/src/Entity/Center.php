@@ -122,11 +122,19 @@ class Center
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-        return $this;
-    }
+  public function setDescription(?string $description): self
+{
+ 
+    $description = strip_tags($description);
+
+    
+    $description = html_entity_decode($description, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+
+    $this->description = $description;
+
+    return $this;
+}
         public function setCity(string $city): self
     {
         $this->city = $city;

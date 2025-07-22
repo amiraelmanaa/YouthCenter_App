@@ -1,20 +1,345 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CenterdetailsController!{% endblock %}
+{% block title %}{{ center.name }} - Youth Center{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Base Styles */
+        :root {
+            --white: #ffffff;
+            --light-blue: #f0f8ff;
+            --blue: #1e88e5;
+            --dark-blue: #0d47a1;
+            --gray: #757575;
+            --light-gray: #f5f5f5;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background: var(--white);
+        }
+        
+        /* Header Section */
+        .header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 1.5rem 0;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background-color: var(--light-blue);
+            padding: 4rem 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .hero-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: var(--dark-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background-color: var(--blue);
+            color: var(--white);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .section {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: var(--dark-blue);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--blue);
+        }
+        
+        /* Info Cards */
+        .info-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .info-card {
+            flex: 1;
+            min-width: 280px;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .info-card h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .info-card p {
+            margin-bottom: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .info-card p strong {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        /* Gallery */
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .photo-item {
+            flex: 1 1 200px;
+            height: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .photo-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Contact Section */
+        .contact-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--blue);
+            color: var(--white);
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+        
+        /* Features List */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-tag {
+            background-color: var(--light-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--blue);
+        }
+        
+        /* Contact Info */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 2rem 0;
+            }
+            
+            .info-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="hero">
+    <div class="container">
+        {% if center.pictures and center.pictures|length > 0 %}
+            <img src="{{ asset('uploads/centers/' ~ center.pictures[0].ImageName) }}" alt="{{ center.name }}" class="hero-image">
+        {% endif %}
+        <h1 class="hero-title">{{ center.name }}</h1>
+        <p class="hero-subtitle">{{ center.city }}, {{ center.country }}</p>
+        <span class="status-badge">Available</span>
+    </div>
+</div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="section">
+    <div class="container">
+        <h2 class="section-title">Center Details</h2>
+        <div class="info-container">
+            <div class="info-card">
+                <h3>
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
+                    </svg>
+                    About
+                </h3>
+                <p><strong>Type:</strong> {{ center.category|title }}</p>
+                <p><strong>Description:</strong> {{ center.description }}</p>
+                <p><strong>Rooms:</strong> {{ center.nbRooms }}</p>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/el_ma/OneDrive/Bureau/youth_app/YouthCenter_App/youth-center-app/src/Controller/CenterdetailsController.php</code></li>
-        <li>Your template at <code>C:/Users/el_ma/OneDrive/Bureau/youth_app/YouthCenter_App/youth-center-app/templates/centerdetails/index.html.twig</code></li>
-    </ul>
+            <div class="info-card">
+                <h3>
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    Location
+                </h3>
+                <div class="contact-info">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span>{{ center.address }}, {{ center.city }}</span>
+                </div>
+                {% if center.phone %}
+                <div class="contact-info">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                    </svg>
+                    <span>{{ center.phone }}</span>
+                </div>
+                {% endif %}
+                {% if center.email %}
+                <div class="contact-info">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <span>{{ center.email }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if center.activities and center.activities|length > 0 %}
+            <div class="info-card">
+                <h3>
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                    Activities
+                </h3>
+                <div class="features">
+                    {% for activity in center.activities %}
+                        <span class="feature-tag">{{ activity.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if center.pictures and center.pictures|length > 1 %}
+<div class="section">
+    <div class="container">
+        <h2 class="section-title">Gallery</h2>
+        <div class="photo-container">
+            {% for picture in center.pictures %}
+                <div class="photo-item">
+                    <img src="{{ asset('uploads/centers/' ~ picture.ImageName) }}" alt="{{ center.name }}">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="section">
+    <div class="container">
+        <div class="contact-card">
+            <h2 class="section-title">Book Your Stay</h2>
+            <p>Contact us for availability and reservation details at {{ center.name }}.</p>
+            <a href="mailto:{{ center.email|default('info@example.com') }}" class="btn">Get in Touch</a>
+        </div>
+    </div>
 </div>
 {% endblock %}
