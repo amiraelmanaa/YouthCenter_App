@@ -5,198 +5,338 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        /* Base Styles */
+        /* Modern Design System */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         :root {
-            --white: #ffffff;
-            --light-blue: #f0f8ff;
-            --blue: #1e88e5;
-            --dark-blue: #0d47a1;
-            --gray: #757575;
-            --light-gray: #f5f5f5;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --secondary: #f59e0b;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --neutral-50: #fafafa;
+            --neutral-100: #f5f5f5;
+            --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4;
+            --neutral-400: #a3a3a3;
+            --neutral-500: #737373;
+            --neutral-600: #525252;
+            --neutral-700: #404040;
+            --neutral-800: #262626;
+            --neutral-900: #171717;
+            
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 24px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            background: var(--white);
+            color: var(--neutral-800);
+            background: var(--neutral-50);
+            overflow-x: hidden;
         }
         
-        /* Header Section */
-        .header {
-            background-color: var(--white);
-            border-bottom: 1px solid var(--light-gray);
-            padding: 1.5rem 0;
-        }
-        
-        /* Hero Section */
+        /* Hero Section - Redesigned */
         .hero {
-            background-color: var(--light-blue);
-            padding: 4rem 0;
-            text-align: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--gradient-primary);
+            overflow: hidden;
         }
         
-        .hero-image {
-            max-width: 100%;
-            height: auto;
-            max-height: 300px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .hero-text {
+            color: white;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
             margin-bottom: 1.5rem;
+            animation: slideInUp 0.8s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .hero-title {
-            font-size: 2.5rem;
-            font-weight: 500;
-            color: var(--dark-blue);
-            margin-bottom: 0.5rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: slideInUp 0.8s ease-out 0.2s both;
         }
         
         .hero-subtitle {
             font-size: 1.25rem;
-            color: var(--gray);
-            margin-bottom: 1.5rem;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 0.5rem 1.25rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            background-color: var(--blue);
-            color: var(--white);
-        }
-        
-        /* Main Content */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-        
-        .section {
-            padding: 3rem 0;
-        }
-        
-        .section-title {
-            font-size: 1.75rem;
-            font-weight: 500;
+            opacity: 0.9;
             margin-bottom: 2rem;
-            color: var(--dark-blue);
-            position: relative;
-            padding-bottom: 0.5rem;
+            line-height: 1.6;
+            animation: slideInUp 0.8s ease-out 0.4s both;
         }
         
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background-color: var(--blue);
-        }
-        
-        /* Info Cards */
-        .info-container {
+        .hero-cta {
             display: flex;
+            gap: 1rem;
             flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 3rem;
+            animation: slideInUp 0.8s ease-out 0.6s both;
         }
         
-        .info-card {
-            flex: 1;
-            min-width: 280px;
-            background: var(--white);
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        
-        .info-card h3 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 1.25rem;
-            color: var(--blue);
+        /* === PICTURE PLACEHOLDER SPACE === */
+        .hero-image-container {
+            position: relative;
+            height: 500px;
+            border-radius: var(--border-radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            animation: slideInRight 0.8s ease-out 0.3s both;
+            
+            /* PLACEHOLDER STYLING - REMOVE WHEN ADDING REAL IMAGES */
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            border: 2px dashed rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            justify-content: center;
         }
         
-        .info-card p {
-            margin-bottom: 0.75rem;
-            color: var(--gray);
-        }
-        
-        .info-card p strong {
-            color: #333;
+        .image-placeholder {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
             font-weight: 500;
         }
         
-        /* Gallery */
-        .photo-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .photo-item {
-            flex: 1 1 200px;
-            height: 180px;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        
-        .photo-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .photo-item img {
+        .hero-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
         }
         
-        /* Contact Section */
-        .contact-card {
-            background: var(--white);
-            border-radius: 8px;
-            padding: 3rem;
+        .hero-image:hover {
+            transform: scale(1.05);
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Modern Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .btn-outline {backg
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+        
+        /* Content Sections */
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section-header {
             text-align: center;
             max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.05);
+            margin: 0 auto 4rem;
         }
         
-        .btn {
+        .section-badge {
             display: inline-block;
-            padding: 0.8rem 2rem;
-            background-color: var(--blue);
-            color: var(--white);
-            border-radius: 6px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            margin-top: 1.5rem;
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
         
-        .btn:hover {
-            background-color: var(--dark-blue);
-            transform: translateY(-2px);
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin-bottom: 1rem;
         }
         
-        /* Features List */
-        .features {
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--neutral-600);
+            line-height: 1.7;
+        }
+        
+        /* Modern Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--neutral-200);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 1rem;
+        }
+        
+        .card-text {
+            color: var(--neutral-600);
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .card-highlight {
+            color: var(--neutral-900);
+            font-weight: 600;
+        }
+        
+        /* Features Tags */
+        .features-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
@@ -204,110 +344,275 @@
         }
         
         .feature-tag {
-            background-color: var(--light-blue);
+            background: var(--gradient-accent);
+            color: white;
             padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--blue);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         
-        /* Contact Info */
-        .contact-info {
+        .feature-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* === GALLERY PLACEHOLDER SPACE === */
+        .gallery-section {
+            background: var(--neutral-100);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 4/3;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* PLACEHOLDER STYLING - REMOVE WHEN ADDING REAL IMAGES */
+            background: linear-gradient(45deg, var(--neutral-200), var(--neutral-300));
+            border: 2px dashed var(--neutral-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-placeholder {
+            text-align: center;
+            color: var(--neutral-500);
+            font-weight: 500;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            background: var(--gradient-primary);
+            color: white;
+            text-align: center;
+        }
+        
+        .contact-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-xl);
+            padding: 3rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .contact-info-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1rem;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
+        .contact-info-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 3rem;
             }
             
-            .hero-subtitle {
-                font-size: 1.1rem;
+            .hero-image-container {
+                height: 300px;
             }
             
             .section {
-                padding: 2rem 0;
+                padding: 3rem 0;
             }
             
-            .info-card {
-                min-width: 100%;
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-card {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .contact-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Loading animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 {% endblock %}
 
 {% block body %}
-<div class="hero">
-    <div class="container">
-        {% if center.pictures and center.pictures|length > 0 %}
-            <img src="{{ asset('uploads/centers/' ~ center.pictures[0].ImageName) }}" alt="{{ center.name }}" class="hero-image">
-        {% endif %}
-        <h1 class="hero-title">{{ center.name }}</h1>
-        <p class="hero-subtitle">{{ center.city }}, {{ center.country }}</p>
-        <span class="status-badge">Available</span>
-    </div>
-</div>
-
-<div class="section">
-    <div class="container">
-        <h2 class="section-title">Center Details</h2>
-        <div class="info-container">
-            <div class="info-card">
-                <h3>
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
-                    </svg>
-                    About
-                </h3>
-                <p><strong>Type:</strong> {{ center.category|title }}</p>
-                <p><strong>Description:</strong> {{ center.description }}</p>
-                <p><strong>Rooms:</strong> {{ center.nbRooms }}</p>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <div class="hero-badge">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Available Now
             </div>
-
-            <div class="info-card">
-                <h3>
+            <h1 class="hero-title">{{ center.name }}</h1>
+            <p class="hero-subtitle">
+                Experience youth development in the heart of {{ center.city }}, {{ center.country }}. 
+                A modern facility designed for growth, learning, and community building.
+            </p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">
                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    Location
-                </h3>
-                <div class="contact-info">
-                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    <span>{{ center.address }}, {{ center.city }}</span>
-                </div>
-                {% if center.phone %}
-                <div class="contact-info">
-                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
-                    </svg>
-                    <span>{{ center.phone }}</span>
-                </div>
-                {% endif %}
-                {% if center.email %}
-                <div class="contact-info">
-                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                     </svg>
-                    <span>{{ center.email }}</span>
+                    Book Your Visit
+                </a>
+                <a href="#details" class="btn btn-outline">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Learn More
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero-image-container">
+            <!-- === ADD YOUR HERO IMAGE HERE === -->
+            {% if center.pictures and center.pictures|length > 0 %}
+                <img src="{{ asset(center.pictures[0].imageName) }}" alt="{{ center.name }}" class="hero-image">
+            {% else %}
+                <div class="image-placeholder">
+                    <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24" style="margin-bottom: 1rem;">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                    <div>Hero Image Placeholder</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">Add your main center image here</div>
                 </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Center Details Section -->
+<section class="section" id="details">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-badge">Center Information</div>
+            <h2 class="section-title">Everything You Need to Know</h2>
+            <p class="section-description">
+                Discover our comprehensive facilities and services designed to support youth development and community engagement.
+            </p>
+        </div>
+        
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">
+                    <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">About Our Center</h3>
+                <p class="card-text"><span class="card-highlight">Type:</span> {{ center.category|title }}</p>
+                <p class="card-text"><span class="card-highlight">Description:</span> {{ center.description }}</p>
+                <p class="card-text"><span class="card-highlight">Capacity:</span> {{ center.nbRooms }} rooms available</p>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">
+                    <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Location & Contact</h3>
+                <p class="card-text"><span class="card-highlight">Address:</span> {{ center.address }}, {{ center.city }}</p>
+                {% if center.phone %}
+                <p class="card-text"><span class="card-highlight">Phone:</span> {{ center.phone }}</p>
+                {% endif %}
+                {% if center.email %}
+                <p class="card-text"><span class="card-highlight">Email:</span> {{ center.email }}</p>
                 {% endif %}
             </div>
 
             {% if center.activities and center.activities|length > 0 %}
-            <div class="info-card">
-                <h3>
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <div class="card fade-in">
+                <div class="card-icon">
+                    <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                     </svg>
-                    Activities
-                </h3>
-                <div class="features">
+                </div>
+                <h3 class="card-title">Available Activities</h3>
+                <p class="card-text">Join our diverse range of programs designed to engage and inspire young minds.</p>
+                <div class="features-container">
                     {% for activity in center.activities %}
                         <span class="feature-tag">{{ activity.name }}</span>
                     {% endfor %}
@@ -316,30 +621,151 @@
             {% endif %}
         </div>
     </div>
-</div>
+</section>
 
+<!-- Gallery Section -->
 {% if center.pictures and center.pictures|length > 1 %}
-<div class="section">
+<section class="section gallery-section">
     <div class="container">
-        <h2 class="section-title">Gallery</h2>
-        <div class="photo-container">
+        <div class="section-header fade-in">
+            <div class="section-badge">Visual Tour</div>
+            <h2 class="section-title">Explore Our Facilities</h2>
+            <p class="section-description">
+                Take a visual journey through our modern youth center and see what makes us special.
+            </p>
+        </div>
+        
+        <div class="gallery-grid">
+            <!-- === ADD YOUR GALLERY IMAGES HERE === -->
             {% for picture in center.pictures %}
-                <div class="photo-item">
-                    <img src="{{ asset('uploads/centers/' ~ picture.ImageName) }}" alt="{{ center.name }}">
+                <div class="gallery-item fade-in">
+                    <img src="{{ asset('uploads/centers/' ~ picture.ImageName) }}" alt="{{ center.name }}" class="gallery-image">
                 </div>
             {% endfor %}
         </div>
     </div>
-</div>
-{% endif %}
-
-<div class="section">
+</section>
+{% else %}
+<section class="section gallery-section">
     <div class="container">
-        <div class="contact-card">
-            <h2 class="section-title">Book Your Stay</h2>
-            <p>Contact us for availability and reservation details at {{ center.name }}.</p>
-            <a href="mailto:{{ center.email|default('info@example.com') }}" class="btn">Get in Touch</a>
+        <div class="section-header fade-in">
+            <div class="section-badge">Visual Tour</div>
+            <h2 class="section-title">Explore Our Facilities</h2>
+            <p class="section-description">
+                Take a visual journey through our modern youth center and see what makes us special.
+            </p>
+        </div>
+        
+        <div class="gallery-grid">
+            <!-- === GALLERY PLACEHOLDER SPACES === -->
+            <div class="gallery-item fade-in">
+                <div class="gallery-placeholder">
+                    <svg width="40" height="40" fill="currentColor" viewBox="0 0 24 24" style="margin-bottom: 0.5rem;">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                    <div>Gallery Image 1</div>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-placeholder">
+                    <svg width="40" height="40" fill="currentColor" viewBox="0 0 24 24" style="margin-bottom: 0.5rem;">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                    <div>Gallery Image 2</div>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <div class="gallery-placeholder">
+                    <svg width="40" height="40" fill="currentColor" viewBox="0 0 24 24" style="margin-bottom: 0.5rem;">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                    <div>Gallery Image 3</div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
+{% endif %}
+
+<!-- Contact Section -->
+<section class="section contact-section" id="contact">
+    <div class="container">
+        <div class="contact-card fade-in">
+            <div class="section-badge" style="background: rgba(255,255,255,0.2);">Get Started</div>
+            <h2 class="section-title" style="color: white;">Ready to Join Us?</h2>
+            <p style="font-size: 1.125rem; margin-bottom: 2rem; opacity: 0.9;">
+                Contact us today to learn more about {{ center.name }} and start your journey with us.
+            </p>
+            
+            <div class="contact-info-grid">
+                <div class="contact-info-item">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span>{{ center.city }}</span>
+                </div>
+                {% if center.phone %}
+                <div class="contact-info-item">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                    </svg>
+                    <span>{{ center.phone }}</span>
+                </div>
+                {% endif %}
+                {% if center.email %}
+                <div class="contact-info-item">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <span>{{ center.email }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <a href="mailto:{{ center.email|default('info@example.com') }}" class="btn btn-primary" style="margin-top: 2rem;">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                Get in Touch
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Intersection Observer for fade-in animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.animationDelay = '0s';
+            entry.target.classList.add('fade-in');
+        }
+    });
+}, observerOptions);
+
+// Observe all elements with fade-in class
+document.addEventListener('DOMContentLoaded', () => {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => observer.observe(el));
+});
+</script>
 {% endblock %}

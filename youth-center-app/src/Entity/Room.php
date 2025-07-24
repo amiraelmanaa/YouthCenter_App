@@ -27,6 +27,9 @@ class Room
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'room')]
     private Collection $bookings;
 
+    #[ORM\ManyToOne(inversedBy: 'Rooms')]
+    private ?Center $center = null;
+
     public function __construct()
     {
         $this->bookings = new ArrayCollection();
@@ -94,6 +97,18 @@ class Room
                 $booking->setRoom(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCenter(): ?Center
+    {
+        return $this->center;
+    }
+
+    public function setCenter(?Center $center): static
+    {
+        $this->center = $center;
 
         return $this;
     }
