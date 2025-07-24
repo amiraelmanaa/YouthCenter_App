@@ -756,6 +756,7 @@
             <div class="centers-grid">
                 {% for center in centers %}
     <div class="center-card scroll-reveal">
+     <a href="{{ path('app_centerdetails', {id: center.id}) }}">
         <div class="center-image">
             {# Display the first picture if available, else show a default image #}
             {% set image = center.pictures|first %}
@@ -766,6 +767,7 @@
                 <p>{{ center.description }}</p>
             </div>
         </div>
+         </a>
     </div>
 {% else %}
     <p>No centers available at the moment.</p>

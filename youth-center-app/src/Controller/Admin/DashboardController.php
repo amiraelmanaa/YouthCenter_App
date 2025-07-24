@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Entity\Activities;
 use App\Entity\CenterManager;
 use App\Entity\Pictures;
+use App\Entity\Room;
+use App\Entity\Booking;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -28,6 +30,9 @@ class DashboardController extends AbstractDashboardController
     $centerUrl = $adminUrlGenerator->setController(CenterCrudController::class)->generateUrl();
     $centermanagerUrl = $adminUrlGenerator->setController(CenterManagerCrudController::class)->generateUrl();
     $picturesUrl = $adminUrlGenerator->setController(PicturesCrudController::class)->generateUrl();
+    $roomUrl = $adminUrlGenerator->setController(RoomCrudController::class)->generateUrl();
+    $bookingUrl = $adminUrlGenerator->setController(BookingCrudController::class)->generateUrl();
+
     
 
     return $this->render('admin/dashboard.html.twig', [
@@ -36,6 +41,8 @@ class DashboardController extends AbstractDashboardController
         'center_crud_url' => $centerUrl,
         'centermanager_crud_url' => $centermanagerUrl,
         'pictures_crud_url' => $picturesUrl,
+        'room_crud_url' => $roomUrl,
+        'booking_crud_url' => $bookingUrl,
     ]);
 }
 
@@ -53,8 +60,9 @@ class DashboardController extends AbstractDashboardController
          yield MenuItem::linkToCrud('Activities', 'fas fa-list', Activities::class);
          yield MenuItem::linkToCrud('Centers managers', 'fas fa-list', CenterManager::class);
          yield MenuItem::linkToCrud('Pictures', 'fas fa-image', Pictures::class);
+         yield MenuItem::linkToCrud('Rooms', 'fas fa-door-open', Room::class);
+         yield MenuItem::linkToCrud('Bookings', 'fas fa-calendar-check', Booking::class);
          yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');
-        
          
     }
 }
