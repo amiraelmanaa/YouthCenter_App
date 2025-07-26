@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking - Check Availability</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin-bottom: 30px;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .booking-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        .booking-header h2 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .booking-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .booking-form {
+            padding: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3498db;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+        }
+
+        .search-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .search-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .search-btn:hover::before {
+            left: 100%;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e9ecef, transparent);
+            margin: 40px 0;
+        }
+
+        .rooms-section {
+            padding: 0 40px 40px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f1f3;
+        }
+
+        .room-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .room-header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 25px;
+            position: relative;
+        }
+
+        .room-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            opacity: 0.95;
+        }
+
+        .room-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .room-body {
+            padding: 25px;
+        }
+
+        .calendar-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .book-btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+            cursor: pointer;
+            border: none;
+        }
+
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .reservation-form {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #e9ecef;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .reservation-form.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reservation-form h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reservation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .reserve-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+            margin-right: 10px;
+        }
+
+        .reserve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .no-rooms {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .no-rooms i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 1.1rem;
+        }
+
+        .type-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid, .reservation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-header h2 {
+                font-size: 2rem;
+            }
+            
+            .booking-form {
+                padding: 25px;
+            }
+            
+            .rooms-section {
+                padding: 0 25px 25px;
+            }
+
+            .reserve-btn, .cancel-btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Booking Form -->
+        <div class="booking-card">
+            <div class="booking-header">
+                <h2><i class="fas fa-calendar-check"></i> Check Availability</h2>
+                <p>Find your perfect stay in our youth center</p>
+            </div>
+            
+            <div class="booking-form">
+                <form id="search-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="start_date">
+                                <i class="fas fa-calendar-alt"></i>
+                                Check-in Date
+                            </label>
+                            <input type="date" id="start_date" name="start_date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="end_date">
+                                <i class="fas fa-calendar-alt"></i>
+                                Check-out Date
+                            </label>
+                            <input type="date" id="end_date" name="end_date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="guests">
+                                <i class="fas fa-users"></i>
+                                Number of Guests
+                            </label>
+                            <input type="number" id="guests" name="guests" min="1" required placeholder="1" value="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="is_group" name="is_group">
+                                <label for="is_group">
+                                    <i class="fas fa-user-friends"></i>
+                                    Group Booking
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Search Available Rooms
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" style="display: none;">
+            <div class="booking-card">
+                <div class="rooms-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-bed"></i>
+                        Available Rooms
+                    </h3>
+                    
+                    <div class="rooms-grid" id="rooms-grid">
+                        <!-- Rooms will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No rooms message -->
+        <div id="no-rooms-section" style="display: none;">
+            <div class="booking-card">
+                <div class="no-rooms">
+                    <i class="fas fa-bed"></i>
+                    <h3>No Available Rooms</h3>
+                    <p>Sorry, no rooms match your search criteria. Please try different dates or reduce the number of guests.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       
+        const sampleRooms = [
+            {
+                id: 1,
+                capacity: 4,
+                pricePerNight: 80,
+                isGroupOnly: false
+            },
+            {
+                id: 2,
+                capacity: 6,
+                pricePerNight: 120,
+                isGroupOnly: true
+            },
+            {
+                id: 3,
+                capacity: 2,
+                pricePerNight: 60,
+                isGroupOnly: false
+            }
+        ];
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('start_date').min = today;
+        document.getElementById('end_date').min = today;
+
+        // Date validation
+        document.getElementById('start_date').addEventListener('change', function() {
+            document.getElementById('end_date').min = this.value;
+        });
+
+        // Handle form submission
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+            const guests = document.getElementById('guests').value;
+            const isGroup = document.getElementById('is_group').checked;
+
+            // Simple validation
+            if (!startDate || !endDate || !guests) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            if (new Date(startDate) >= new Date(endDate)) {
+                alert('Check-out date must be after check-in date');
+                return;
+            }
+
+            // Filter rooms based on criteria (simplified logic)
+            const availableRooms = sampleRooms.filter(room => {
+                if (isGroup && !room.isGroupOnly) return false;
+                return room.capacity >= parseInt(guests);
+            });
+
+            displayRooms(availableRooms, startDate, endDate, guests);
+        });
+
+        function displayRooms(rooms, startDate, endDate, guests) {
+            const resultsSection = document.getElementById('results-section');
+            const noRoomsSection = document.getElementById('no-rooms-section');
+            const roomsGrid = document.getElementById('rooms-grid');
+
+            if (rooms.length === 0) {
+                resultsSection.style.display = 'none';
+                noRoomsSection.style.display = 'block';
+                return;
+            }
+
+            noRoomsSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            roomsGrid.innerHTML = rooms.map(room => `
+                <div class="room-card">
+                    <div class="room-header">
+                        <div class="room-details">
+                            <div class="room-detail">
+                                <i class="fas fa-users"></i>
+                                <span>${room.capacity} Guests</span>
+                            </div>
+                            <div class="room-detail">
+                                <span class="price-tag">€${room.pricePerNight}/night</span>
+                            </div>
+                            <div class="room-detail">
+                                <i class="fas fa-tag"></i>
+                                <span class="type-badge">
+                                    ${room.isGroupOnly ? 'Group Only' : 'Individual or Group'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="room-body">
+                        <div class="calendar-container" id="calendar-${room.id}">
+                            <i class="fas fa-calendar-check"></i>
+                            Calendar loaded for Room ${room.id}
+                        </div>
+                        
+                        <button class="book-btn" onclick="showReservationForm(${room.id}, '${startDate}', '${endDate}', ${guests})">
+                            <i class="fas fa-check-circle"></i>
+                            Book This Room
+                        </button>
+
+                        <div class="reservation-form" id="reservation-form-${room.id}">
+                            <h4>
+                                <i class="fas fa-user-edit"></i>
+                                Reservation Details
+                            </h4>
+                            <form id="reservation-${room.id}">
+                                <div class="reservation-grid">
+                                    <div class="form-group">
+                                        <label for="first-name-${room.id}">
+                                            <i class="fas fa-user"></i>
+                                            First Name
+                                        </label>
+                                        <input type="text" id="first-name-${room.id}" name="first_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last-name-${room.id}">
+                                            <i class="fas fa-user"></i>
+                                            Last Name
+                                        </label>
+                                        <input type="text" id="last-name-${room.id}" name="last_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="age-${room.id}">
+                                            <i class="fas fa-birthday-cake"></i>
+                                            Age
+                                        </label>
+                                        <input type="number" id="age-${room.id}" name="age" min="1" max="120" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id-document-${room.id}">
+                                            <i class="fas fa-id-card"></i>
+                                            ID Card / Passport
+                                        </label>
+                                        <input type="text" id="id-document-${room.id}" name="id_document" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="reserve-btn">
+                                        <i class="fas fa-bookmark"></i>
+                                        Reserve Room
+                                    </button>
+                                    <button type="button" class="cancel-btn" onclick="hideReservationForm(${room.id})">
+                                        <i class="fas fa-times"></i>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="success-message" id="success-${room.id}">
+                                <i class="fas fa-check-circle"></i>
+                                Reservation successful! We'll contact you soon.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners for reservation forms
+            rooms.forEach(room => {
+                document.getElementById(`reservation-${room.id}`).addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleReservation(room.id);
+                });
+            });
+
+            // Scroll to results
+            setTimeout(() => {
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function showReservationForm(roomId, startDate, endDate, guests) {
+            const form = document.getElementById(`reservation-form-${roomId}`);
+            form.classList.add('show');
+            
+            // Hide the book button
+            event.target.style.display = 'none';
+        }
+
+        function hideReservationForm(roomId) {
+            const form = document.getElementById(`reservation-form-${roomId}`);
+            form.classList.remove('show');
+            
+            // Show the book button again
+            const bookBtn = form.parentElement.querySelector('.book-btn');
+            bookBtn.style.display = 'block';
+            
+            // Clear form
+            document.getElementById(`reservation-${roomId}`).reset();
+            
+            // Hide success message
+            document.getElementById(`success-${roomId}`).classList.remove('show');
+        }
+
+        function handleReservation(roomId) {
+            const form = document.getElementById(`reservation-${roomId}`);
+            const firstName = document.getElementById(`first-name-${roomId}`).value;
+            const lastName = document.getElementById(`last-name-${roomId}`).value;
+            const age = document.getElementById(`age-${roomId}`).value;
+            const idDocument = document.getElementById(`id-document-${roomId}`).value;
+
+            // Simple validation
+            if (!firstName || !lastName || !age || !idDocument) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Simulate reservation process
+            setTimeout(() => {
+                document.getElementById(`success-${roomId}`).classList.add('show');
+                form.reset();
+                
+                // Hide form after success
+                setTimeout(() => {
+                    hideReservationForm(roomId);
+                }, 3000);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

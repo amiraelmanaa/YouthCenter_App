@@ -275,7 +275,6 @@ class Center
     public function removeRoom(Room $room): static
     {
         if ($this->Rooms->removeElement($room)) {
-            // set the owning side to null (unless already changed)
             if ($room->getCenter() === $this) {
                 $room->setCenter(null);
             }

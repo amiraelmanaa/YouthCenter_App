@@ -34,6 +34,9 @@ class Booking
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
+    #[ORM\Column]
+    private ?bool $isGroupBooking = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +129,18 @@ class Booking
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function isGroupBooking(): ?bool
+    {
+        return $this->isGroupBooking;
+    }
+
+    public function setIsGroupBooking(bool $isGroupBooking): static
+    {
+        $this->isGroupBooking = $isGroupBooking;
 
         return $this;
     }

@@ -26,9 +26,12 @@ class Room
      */
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'room')]
     private Collection $bookings;
-
     #[ORM\ManyToOne(inversedBy: 'Rooms')]
     private ?Center $center = null;
+
+
+    #[ORM\Column]
+    private ?bool $is_group_only = null;
 
     public function __construct()
     {
@@ -109,6 +112,22 @@ class Room
     public function setCenter(?Center $center): static
     {
         $this->center = $center;
+
+        return $this;
+    }
+    public function getCenterName(): string
+{
+    return $this->center?->getName() ?? 'No Center';
+}
+
+    public function isGroupOnly(): ?bool
+    {
+        return $this->is_group_only;
+    }
+
+    public function setIsGroupOnly(bool $is_group_only): static
+    {
+        $this->is_group_only = $is_group_only;
 
         return $this;
     }
