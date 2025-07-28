@@ -639,7 +639,7 @@
             <!-- === ADD YOUR GALLERY IMAGES HERE === -->
             {% for picture in center.pictures %}
                 <div class="gallery-item fade-in">
-                    <img src="{{ asset('uploads/centers/' ~ picture.ImageName) }}" alt="{{ center.name }}" class="gallery-image">
+                    <img src="{{ asset('public/' ~ picture.ImageName) }}" alt="{{ center.name }}" class="gallery-image">
                 </div>
             {% endfor %}
         </div>
@@ -657,7 +657,6 @@
         </div>
         
         <div class="gallery-grid">
-            <!-- === GALLERY PLACEHOLDER SPACES === -->
             <div class="gallery-item fade-in">
                 <div class="gallery-placeholder">
                     <svg width="40" height="40" fill="currentColor" viewBox="0 0 24 24" style="margin-bottom: 0.5rem;">

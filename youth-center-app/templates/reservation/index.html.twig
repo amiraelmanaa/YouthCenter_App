@@ -441,7 +441,8 @@
             </div>
             
             <div class="booking-form">
-                <form id="search-form">
+                <form id="search-form" method="POST">
+    <input type="hidden" name="search" value="1">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="start_date">
@@ -515,29 +516,30 @@
     </div>
 
     <script>
-       
-        const sampleRooms = [
-            {
-                id: 1,
-                capacity: 4,
-                pricePerNight: 80,
-                isGroupOnly: false
-            },
-            {
-                id: 2,
-                capacity: 6,
-                pricePerNight: 120,
-                isGroupOnly: true
-            },
-            {
-                id: 3,
-                capacity: 2,
-                pricePerNight: 60,
-                isGroupOnly: false
-            }
-        ];
+          //AJAX to collect info to filter 
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-        // Set minimum date to today
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    const guests = document.getElementById('guests').value;
+    const isGroup = document.getElementById('is_group').checked ? 1 : 0;
+
+    fetch(`/reservation?start_date=${startDate}&end_date=${endDate}&guests=${guests}&is_group=${isGroup}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        displayRooms(data, startDate, endDate, guests);
+    })
+    .catch(err => {
+        console.error('Error fetching rooms:', err);
+    });
+});
+
+        
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('start_date').min = today;
         document.getElementById('end_date').min = today;
@@ -650,12 +652,13 @@
                                         <input type="number" id="age-${room.id}" name="age" min="1" max="120" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="id-document-${room.id}">
-                                            <i class="fas fa-id-card"></i>
-                                            ID Card / Passport
+                                        <label for="email-${room.id}">
+                                            <i class="fas fa-envelope"></i>
+                                            Email
                                         </label>
-                                        <input type="text" id="id-document-${room.id}" name="id_document" required>
+                                        <input type="email" id="email-${room.id}" name="email" required>
                                     </div>
+                            
                                 </div>
                                 <div>
                                     <button type="submit" class="reserve-btn">
@@ -719,10 +722,11 @@
             const firstName = document.getElementById(`first-name-${roomId}`).value;
             const lastName = document.getElementById(`last-name-${roomId}`).value;
             const age = document.getElementById(`age-${roomId}`).value;
-            const idDocument = document.getElementById(`id-document-${roomId}`).value;
+            const email = document.getElementById(`email-${roomId}`).value;
+
 
             // Simple validation
-            if (!firstName || !lastName || !age || !idDocument) {
+            if (!firstName || !lastName || !age || !email) {
                 alert('Please fill in all fields');
                 return;
             }
@@ -738,6 +742,48 @@
                 }, 3000);
             }, 1000);
         }
+        function handleReservation(roomId) {
+    const form = document.getElementById(`reservation-${roomId}`);
+
+    const payload = {
+        room_id: roomId,
+        start_date: document.getElementById('start_date').value,
+        end_date: document.getElementById('end_date').value,
+        guests: parseInt(document.getElementById('guests').value),
+        is_group: document.getElementById('is_group').checked,
+        first_name: document.getElementById(`first-name-${roomId}`).value,
+        last_name: document.getElementById(`last-name-${roomId}`).value,
+        age: parseInt(document.getElementById(`age-${roomId}`).value),
+        email: document.getElementById(`email-${roomId}`).value,
+    };
+
+    fetch('/booking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(`success-${roomId}`).classList.add('show');
+            form.reset();
+
+            setTimeout(() => {
+                hideReservationForm(roomId);
+            }, 3000);
+        } else {
+            alert('Booking failed. Try again.');
+        }
+    })
+    .catch(err => {
+        console.error('Booking error:', err);
+        alert('An error occurred while saving your reservation.');
+    });
+}
+
     </script>
 </body>
 </html>

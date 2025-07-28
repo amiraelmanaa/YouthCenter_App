@@ -236,8 +236,8 @@
         }
 
         .logo-icon {
-            width: 55px;
-            height: 32px;
+            width: 70px;
+            height: 40px;
             margin-right: 0.5rem;
             background: linear-gradient(135deg,rgb(90, 107, 255),rgb(70, 68, 236));
             border-radius: 8px;
@@ -246,7 +246,7 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 1 rem;
         }
 
         .nav-menu {
@@ -711,8 +711,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <div class="logo-icon">Arab</div>
-                Youth Centers
+                <div class="logo-icon">Youth</div>
+                Connect
             </a>
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="#home" class="nav-link">Home</a></li>
@@ -758,7 +758,7 @@
     <div class="center-card scroll-reveal">
      <a href="{{ path('app_centerdetails', {id: center.id}) }}">
         <div class="center-image">
-            {# Display the first picture if available, else show a default image #}
+            {# to fix: display the first picture if available, else show a default image #}
             {% set image = center.pictures|first %}
             <img src="{% if image and image.imageName %}{{ asset(image.imageName) }}{% else %}{{ asset('default-center.jpg') }}{% endif %}"
      alt="{{ center.name|e }}">

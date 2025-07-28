@@ -20,7 +20,6 @@ class CenterCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             TextEditorField::new('description'),
             TextField::new('name'),
             TextField::new('country'),

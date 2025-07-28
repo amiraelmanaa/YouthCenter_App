@@ -17,13 +17,23 @@ class Booking
     private ?Room $room = null;
 
     #[ORM\Column]
+    private ?int $age = null;
+
+    #[ORM\Column]
     private ?\DateTime $startDate = null;
 
     #[ORM\Column]
     private ?\DateTime $endDate = null;
 
-    #[ORM\Column(nullable: true, length: 255)]
+    #[ORM\Column(length: 255)]
     private ?string $guestName = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $guestLastName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
 
     #[ORM\Column(nullable: true)]
     private ?int $guestsCount = null;
@@ -109,6 +119,16 @@ class Booking
         return $this;
     }
 
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
     public function getTotalPrice(): ?float
     {
         return $this->totalPrice;
@@ -143,5 +163,30 @@ class Booking
         $this->isGroupBooking = $isGroupBooking;
 
         return $this;
+    }
+    
+    public function getGuestLastName(): ?string
+    {
+        return $this->guestLastName;
+    }
+    public function setGuestLastName(string $guestLastName): static
+    {
+        $this->guestLastName = $guestLastName;
+
+        return $this;
+    }
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+    public function setAge(int $age): static
+    {
+        $this->age = $age;
+
+        return $this;
+    }
+    public function calculateNights(\DateTime $startDate, \DateTime $endDate): int
+    {
+        return (int) $startDate->diff($endDate)->format('%a');
     }
 }

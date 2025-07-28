@@ -15,6 +15,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Room::class);
     }
+    /*
 
  public function isAvailable(Room $room, \DateTimeInterface $start, \DateTimeInterface $end): bool
 {
@@ -32,7 +33,7 @@ class RoomRepository extends ServiceEntityRepository
 
     return $count === 0;
 }
-
+*/
 public function findAvailableRooms(\DateTimeInterface $start, \DateTimeInterface $end, int $guests, bool $isGroup): array
 {
     $qb = $this->createQueryBuilder('r')
