@@ -25,11 +25,6 @@ class CenterManager
     #[ORM\OneToOne(mappedBy: 'Manager_ID', cascade: ['persist', 'remove'])]
     private ?Center $center = null;
 
-    #[ORM\Column]
-    private ?int $nb_available_rooms = null;
-
-    #[ORM\Column]
-    private ?int $nb_booked_rooms = null;
 
     public function getId(): ?int
     {
@@ -86,12 +81,12 @@ class CenterManager
 
     public function setCenter(?Center $center): static
     {
-        // unset the owning side of the relation if necessary
+       
         if ($center === null && $this->center !== null) {
             $this->center->setManagerID(null);
         }
 
-        // set the owning side of the relation if necessary
+        
         if ($center !== null && $center->getManagerID() !== $this) {
             $center->setManagerID($this);
         }
@@ -105,28 +100,6 @@ class CenterManager
     return $this->name . ' ' . $this->lastname;
 }
 
-    public function getNbAvailableRooms(): ?int
-    {
-        return $this->nb_available_rooms;
-    }
-
-    public function setNbAvailableRooms(int $nb_available_rooms): static
-    {
-        $this->nb_available_rooms = $nb_available_rooms;
-
-        return $this;
-    }
-
-    public function getNbBookedRooms(): ?int
-    {
-        return $this->nb_booked_rooms;
-    }
-
-    public function setNbBookedRooms(int $nb_booked_rooms): static
-    {
-        $this->nb_booked_rooms = $nb_booked_rooms;
-
-        return $this;
-    }
+   
 
 }

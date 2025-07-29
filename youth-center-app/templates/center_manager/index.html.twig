@@ -1,461 +1,790 @@
-{% extends 'base.html.twig' %}
-{% block title %}Technician Dashboard - Maintenance Assignments{% endblock %}
-{% block body %}
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f8f9fa;
-        color: #333;
-        line-height: 1.6;
-    }
-    
-    /* Navigation Bar */
-    .navbar {
-        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-        color: white;
-        padding: 1rem 0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-    
-    .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .nav-brand {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .nav-links {
-        display: flex;
-        list-style: none;
-        gap: 2rem;
-    }
-    
-    .nav-links a {
-        color: white;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-        font-weight: 500;
-    }
-    
-    .nav-links a:hover {
-        background-color: rgba(255,255,255,0.1);
-    }
-    
-    .nav-links a.logout {
-        background-color: #dc2626;
-        color: white;
-    }
-    
-    .nav-links a.logout:hover {
-        background-color: #b91c1c;
-    }
-    
-    /* Main Content */
-    .main-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-    
-    .dashboard-header {
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
-        border-left: 4px solid #1e3a8a;
-    }
-    
-    .dashboard-title {
-        color: #1e3a8a;
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .dashboard-subtitle {
-        color: #64748b;
-        font-size: 1.1rem;
-    }
-    
-    .welcome-message {
-        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-    
-    .welcome-message h2 {
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Assignments Section */
-    .assignments-section {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    
-    .section-header {
-        background: #1e3a8a;
-        color: white;
-        padding: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-    
-    .refresh-btn {
-        background: #3b82f6;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background-color 0.3s ease;
-    }
-    
-    .refresh-btn:hover {
-        background: #2563eb;
-    }
-    
-    /* Grid Layout */
-    .assignments-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 1.5rem;
-        padding: 2rem;
-    }
-    
-    .assignment-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 1.5rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        cursor: pointer;
-    }
-    
-    .assignment-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        border-color: #3b82f6;
-    }
-    
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-    
-    .center-name {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #1e3a8a;
-        margin-bottom: 0.5rem;
-    }
-    
-    .priority-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
-    
-    .priority-high {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-    
-    .priority-medium {
-        background: #fef3c7;
-        color: #d97706;
-    }
-    
-    .priority-low {
-        background: #dcfce7;
-        color: #16a34a;
-    }
-    
-    .card-details {
-        color: #64748b;
-        margin-bottom: 1rem;
-    }
-    
-    .card-details p {
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-details strong {
-        color: #374151;
-    }
-    
-    .card-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
-    }
-    
-    .btn {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background-color 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-    }
-    
-    .btn-primary {
-        background: #3b82f6;
-        color: white;
-    }
-    
-    .btn-primary:hover {
-        background: #2563eb;
-    }
-    
-    .btn-secondary {
-        background: #6b7280;
-        color: white;
-    }
-    
-    .btn-secondary:hover {
-        background: #4b5563;
-    }
-    
-    /* Status Indicators */
-    .status-indicator {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-right: 0.5rem;
-    }
-    
-    .status-pending {
-        background: #f59e0b;
-    }
-    
-    .status-in-progress {
-        background: #3b82f6;
-    }
-    
-    .status-urgent {
-        background: #dc2626;
-    }
-    
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #64748b;
-    }
-    
-    .empty-state h3 {
-        margin-bottom: 1rem;
-        color: #374151;
-    }
-    
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .nav-container {
-            flex-direction: column;
-            gap: 1rem;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Center Manager Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .nav-links {
-            gap: 1rem;
-        }
-        
-        .main-container {
-            padding: 1rem;
-        }
-        
-        .assignments-grid {
-            grid-template-columns: 1fr;
-            padding: 1rem;
-        }
-        
-        .dashboard-header {
-            padding: 1.5rem;
-        }
-        
-        .dashboard-title {
-            font-size: 1.5rem;
-        }
-    }
-</style>
 
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="#" class="nav-brand">YouthCenter Maintenance</a>
-        <ul class="nav-links">
-            <li><a href="{{ path('home') }}">Home</a></li>
-            <li><a href="{{ path('support') }}">Support</a></li>
-            <li><a href="{{ path('logout') }}" class="logout">Logout</a></li>
-        </ul>
-    </div>
-</nav>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+        }
 
-<div class="main-container">
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">Technician Dashboard</h1>
-        <p class="dashboard-subtitle">Manage maintenance assignments and track center status</p>
-    </div>
-    
-    <div class="welcome-message">
-        <h2>Welcome back, {{ controller_name }}!</h2>
-        <p>You have pending maintenance assignments that require your attention.</p>
-    </div>
-    
-    <div class="assignments-section">
-        <div class="section-header">
-            <h2 class="section-title">Maintenance Assignments</h2>
-            <button class="refresh-btn" onclick="location.reload()">Refresh</button>
-        </div>
-        
-        <div class="assignments-grid">
-            <!-- Sample assignment cards - replace with actual database data -->
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Downtown Youth Center</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-urgent"></span>
-                            Status: Urgent
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-high">High Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> HVAC system malfunction</p>
-                    <p><strong>Location:</strong> 123 Main Street</p>
-                    <p><strong>Reported:</strong> 2 hours ago</p>
-                    <p><strong>Contact:</strong> John Smith - (555) 123-4567</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Eastside Community Center</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-pending"></span>
-                            Status: Pending
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-medium">Medium Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Electrical outlet replacement</p>
-                    <p><strong>Location:</strong> 456 Oak Avenue</p>
-                    <p><strong>Reported:</strong> 1 day ago</p>
-                    <p><strong>Contact:</strong> Sarah Johnson - (555) 987-6543</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Westside Youth Hub</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-in-progress"></span>
-                            Status: In Progress
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-low">Low Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Door lock maintenance</p>
-                    <p><strong>Location:</strong> 789 Pine Street</p>
-                    <p><strong>Reported:</strong> 3 days ago</p>
-                    <p><strong>Contact:</strong> Mike Davis - (555) 456-7890</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Update Status</a>
-                </div>
-            </div>
-            
-            <!-- Add more assignment cards as needed -->
-            <!-- You can loop through your database results here -->
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">{{ assignment.centerName }}</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-{{ assignment.status }}"></span>
-                            Status: {{ assignment.status|title }}
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-{{ assignment.priority }}">{{ assignment.priority|title }} Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> {{ assignment.issue }}</p>
-                    <p><strong>Location:</strong> {{ assignment.location }}</p>
-                    <p><strong>Reported:</strong> {{ assignment.reportedTime|date('M j, Y g:i A') }}</p>
-                    <p><strong>Contact:</strong> {{ assignment.contact }}</p>
-                </div>
-                <div class="card-actions">
-                    <a href="{{ path('assignment_details', {'id': assignment.id}) }}" class="btn btn-primary">View Details</a>
-                    <a href="{{ path('accept_assignment', {'id': assignment.id}) }}" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            {% endfor %}
-            {% endcomment %}
-        </div>
-        
-        <!-- Uncomment this section if no assignments are found -->
-        {% comment %}
-        {% if assignments is empty %}
-        <div class="empty-state">
-            <h3>No Maintenance Assignments</h3>
-            <p>All centers are currently in good condition. Check back later for new assignments.</p>
-        </div>
-        {% endif %}
-        {% endcomment %}
-    </div>
-</div>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-{% endblock %}
+        .header {
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #2563eb;
+        }
+
+        .header h1 {
+            color: #1a202c;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #059669;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-header h2 {
+            color: #1a202c;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .card-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .card-content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .card-content::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+
+        .card-content::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        .booking-item, .user-item, .technician-item {
+            background: #f9fafb;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .booking-item:last-child, .user-item:last-child, .technician-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .booking-info h3 {
+            color: #1a202c;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .booking-info p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-accepted {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-declined {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-available {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-busy {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-accept {
+            background-color: #059669;
+            color: white;
+        }
+
+        .btn-decline {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-assign {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .priority-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            margin-right: 12px;
+        }
+
+        .priority-select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .problem-form {
+            background: #f9fafb;
+            border-radius: 4px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .tech-assignment {
+            background: #f9fafb;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .assignment-form {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .assignment-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: #059669;
+        }
+
+        .notification.error {
+            background-color: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .assignment-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Center Manager Dashboard</h1>
+            <p>Welcome back, {{ manager.name }}! Manage your center efficiently.</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ bookings|length }}</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ bookings|filter(b => b.status == 'pending')|length }}</div>
+                <div class="stat-label">Pending Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ bookings|filter(b => b.status == 'accepted')|length }}</div>
+                <div class="stat-label">Active Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ technicians|length }}</div>
+                <div class="stat-label">Available Technicians</div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Booking Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Booking Requests</h2>
+                </div>
+                <div class="card-content">
+                    {% if bookings|length > 0 %}
+                        {% for booking in bookings %}
+                        <div class="booking-item">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <h3>{{ booking.guestName }}</h3>
+                                    <p>Email: {{ booking.email }}</p>
+                                    <p>Dates: {{ booking.startDate|date('M d, Y') }} - {{ booking.endDate|date('M d, Y') }}</p>
+                                </div>
+                                <span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span>
+                            </div>
+                            
+                            {% if booking.status == 'pending' %}
+                            <div class="action-buttons">
+                                <button class="btn btn-accept" onclick="handleBooking({{ booking.id }}, 'accept')">
+                                    Accept
+                                </button>
+                                <button class="btn btn-decline" onclick="handleBooking({{ booking.id }}, 'decline')">
+                                    Decline
+                                </button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <h3>No booking requests</h3>
+                            <p>New booking requests will appear here</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- User Reports -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Users</h2>
+                </div>
+                <div class="card-content">
+                    {% if bookings|length > 0 %}
+                        {% for user in bookings %}
+                        <div class="user-item">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <h3>{{ user.guestName }}</h3>
+                                    <p>Email: {{ user.email }}</p>
+                                    <p>Last booking: {{ user.startDate|date('M d, Y') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <h3>No recent users</h3>
+                            <p>Recent user activity will appear here</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Technicians Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Technician Management</h2>
+                </div>
+                <div class="card-content">
+                    {% if technicians|length > 0 %}
+                        {% for technician in technicians %}
+                        <div class="technician-item">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <h3>{{ technician.name }}</h3>
+                                    <p>Email: {{ technician.email }}</p>
+                                    <p>Phone: {{ technician.phone }}</p>
+                                    <p>Specialization: {{ technician.specialization }}</p>
+                                    <p>Rating: {{ technician.rating }}/5</p>
+                                </div>
+                                <span class="status-badge status-{{ technician.status == 'available' ? 'available' : 'busy' }}">
+                                    {{ technician.status }}
+                                </span>
+                            </div>
+                            
+                            {% if technician.status == 'available' %}
+                            <div class="tech-assignment">
+                                <div class="assignment-form">
+                                    <div class="assignment-input">
+                                        <input type="text" placeholder="Assignment description..." id="assignment-{{ technician.id }}">
+                                    </div>
+                                    <select class="priority-select" id="priority-{{ technician.id }}">
+                                        <option value="low">Low Priority</option>
+                                        <option value="medium">Medium Priority</option>
+                                        <option value="high">High Priority</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                    <button class="btn btn-assign" onclick="assignTechnician({{ technician.id }})">
+                                        Assign
+                                    </button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <h3>No technicians available</h3>
+                            <p>Available technicians will appear here</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Report Technical Problems -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Report Technical Issue</h2>
+                </div>
+                <div class="card-content">
+                    <form class="problem-form" onsubmit="reportProblem(event)">
+                        <div class="form-group">
+                            <label for="problem-title">Issue Title</label>
+                            <input type="text" id="problem-title" name="title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="problem-category">Category</label>
+                            <select id="problem-category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="electrical">Electrical</option>
+                                <option value="plumbing">Plumbing</option>
+                                <option value="hvac">HVAC</option>
+                                <option value="internet">Internet/WiFi</option>
+                                <option value="security">Security System</option>
+                                <option value="maintenance">General Maintenance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="problem-priority">Priority Level</label>
+                            <select id="problem-priority" name="priority" required>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="problem-description">Description</label>
+                            <textarea id="problem-description" name="description" placeholder="Describe the technical problem in detail..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="problem-location">Location</label>
+                            <input type="text" id="problem-location" name="location" placeholder="Room number, area, or specific location">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-assign" style="width: 100%;">
+                            Submit Issue Report
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Handle Booking Accept/Decline
+        function handleBooking(bookingId, action) {
+            const button = event.target;
+            const bookingItem = button.closest('.booking-item');
+            
+            // Add loading state
+            button.classList.add('loading');
+            button.disabled = true;
+            
+            // Make API call to Symfony controller
+            fetch(`/manager/booking/${bookingId}/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                },
+                body: JSON.stringify({
+                    action: action,
+                    bookingId: bookingId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showNotification(`Booking ${action}ed successfully!`, 'success');
+                    
+                    // Update UI
+                    const statusBadge = bookingItem.querySelector('.status-badge');
+                    const actionButtons = bookingItem.querySelector('.action-buttons');
+                    
+                    statusBadge.className = `status-badge status-${action}ed`;
+                    statusBadge.textContent = `${action}ed`;
+                    
+                    if (actionButtons) {
+                        actionButtons.remove();
+                    }
+                } else {
+                    showNotification(data.message || 'Error processing booking request', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Network error. Please try again.', 'error');
+            })
+            .finally(() => {
+                button.classList.remove('loading');
+                button.disabled = false;
+            });
+        }
+
+        // Assign Technician
+        function assignTechnician(technicianId) {
+            const assignment = document.getElementById(`assignment-${technicianId}`).value;
+            const priority = document.getElementById(`priority-${technicianId}`).value;
+            
+            if (!assignment.trim()) {
+                showNotification('Please enter an assignment description', 'error');
+                document.getElementById(`assignment-${technicianId}`).focus();
+                return;
+            }
+
+            const button = event.target;
+            button.classList.add('loading');
+            button.disabled = true;
+
+            // Make API call to Symfony controller
+            fetch('/manager/assign-technician', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                },
+                body: JSON.stringify({
+                    technicianId: technicianId,
+                    assignment: assignment,
+                    priority: priority
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showNotification('Assignment sent to technician successfully!', 'success');
+                    
+                    // Clear form
+                    document.getElementById(`assignment-${technicianId}`).value = '';
+                    document.getElementById(`priority-${technicianId}`).value = 'low';
+                    
+                    // Update technician status if needed
+                    if (data.technicianStatus === 'busy') {
+                        const technicianItem = button.closest('.technician-item');
+                        const statusBadge = technicianItem.querySelector('.status-badge');
+                        const assignmentForm = technicianItem.querySelector('.tech-assignment');
+                        
+                        statusBadge.className = 'status-badge status-busy';
+                        statusBadge.textContent = 'busy';
+                        
+                        if (assignmentForm) {
+                            assignmentForm.remove();
+                        }
+                    }
+                } else {
+                    showNotification(data.message || 'Error assigning technician', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Network error. Please try again.', 'error');
+            })
+            .finally(() => {
+                button.classList.remove('loading');
+                button.disabled = false;
+            });
+        }
+
+        // Report Technical Problem
+        function reportProblem(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            submitButton.classList.add('loading');
+            submitButton.disabled = true;
+            
+            const formData = new FormData(form);
+            const problemData = {
+                title: formData.get('title'),
+                category: formData.get('category'),
+                priority: formData.get('priority'),
+                description: formData.get('description'),
+                location: formData.get('location')
+            };
+
+            // Make API call to Symfony controller
+            fetch('/manager/report-problem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                },
+                body: JSON.stringify(problemData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showNotification('Technical issue reported successfully!', 'success');
+                    form.reset();
+                } else {
+                    showNotification(data.message || 'Error reporting technical issue', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Network error. Please try again.', 'error');
+            })
+            .finally(() => {
+                submitButton.classList.remove('loading');
+                submitButton.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
