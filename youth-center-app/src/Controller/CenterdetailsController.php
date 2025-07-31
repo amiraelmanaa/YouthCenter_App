@@ -34,6 +34,7 @@ final class CenterdetailsController extends AbstractController
         if (!$center) {
             throw $this->createNotFoundException('Youth center not found.');
         }
+        
 
         return $this->render('centerdetails/index.html.twig', [
             'center' => $center,
