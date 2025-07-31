@@ -9,6 +9,7 @@ use App\Entity\CenterManager;
 use App\Entity\Pictures;
 use App\Entity\Room;
 use App\Entity\Booking;
+use App\Entity\Technician;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -32,6 +33,7 @@ class DashboardController extends AbstractDashboardController
     $picturesUrl = $adminUrlGenerator->setController(PicturesCrudController::class)->generateUrl();
     $roomUrl = $adminUrlGenerator->setController(RoomCrudController::class)->generateUrl();
     $bookingUrl = $adminUrlGenerator->setController(BookingCrudController::class)->generateUrl();
+    $techUrl = $adminUrlGenerator->setController(TechnicianCrudController::class)->generateUrl();
 
     
 
@@ -43,6 +45,7 @@ class DashboardController extends AbstractDashboardController
         'pictures_crud_url' => $picturesUrl,
         'room_crud_url' => $roomUrl,
         'booking_crud_url' => $bookingUrl,
+        'technician_crud_url' => $techUrl,
     ]);
 }
 
@@ -62,7 +65,9 @@ class DashboardController extends AbstractDashboardController
          yield MenuItem::linkToCrud('Pictures', 'fas fa-image', Pictures::class);
          yield MenuItem::linkToCrud('Rooms', 'fas fa-door-open', Room::class);
          yield MenuItem::linkToCrud('Bookings', 'fas fa-calendar-check', Booking::class);
+         yield MenuItem::linkToCrud('Technicians', 'fas fa-tools', Technician::class);
          yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');
+
          
     }
 }

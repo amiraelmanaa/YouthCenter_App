@@ -6,6 +6,9 @@
 parameters:
 
 services:
+    App\EventListener\UserEntityListener:
+        tags:
+            - { name: doctrine.orm.entity_listener }
     App\Security\LoginSuccessHandler:
         arguments:
             $router: '@router'
