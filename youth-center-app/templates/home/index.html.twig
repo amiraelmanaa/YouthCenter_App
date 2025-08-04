@@ -835,7 +835,13 @@
                 <li><a href="#pricing" class="nav-link">Pricing</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
-                <li><a href="#" class="login-btn">Login</a></li>
+                <li>
+                {% if app.user %}
+                 <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
+                 {% else %}
+                  <a href="{{ path('app_register') }}" class="login-btn">Login</a>
+                  {% endif %}
+                </li>
             </ul>
             <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
         </div>

@@ -10,7 +10,9 @@ use Symfony\Bundle\SecurityBundle\Security; // Updated import
 use App\Entity\Center;
 use App\Entity\CenterManager;
 use App\Entity\Booking;
+use App\Entity\Technician;
 use App\Entity\User;
+use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -59,15 +61,7 @@ public function index(): Response
         ->getQuery()
         ->getResult();
 
-  $technicalUsers = $this->em->getRepository(User::class)
-    ->createQueryBuilder('u')
-    ->where('u.roles LIKE :role1')
-    ->andWhere('u.roles LIKE :role2')
-    ->setParameter('role1', '%ROLE_USER%')
-    ->setParameter('role2', '%ROLE_TECHNICIAN%')
-    ->getQuery()
-    ->getResult();
-
+ $technicalUsers = $this->em->getRepository(Technician::class)->findAll();
 
     
 

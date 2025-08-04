@@ -17,6 +17,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            padding-top: 84px;
         }
 
         .container {
@@ -429,9 +430,184 @@
                 margin: 5px 0;
             }
         }
+        /* === Navbar Styles === */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; 
+    width: 100%; 
+    background: white;
+    box-shadow: var(--shadow-sm);
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--neutral-800);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+/* Spacer below fixed navbar */
+.navbar-spacer {
+    height: 64px;
+}
+
+/* === Logo Styles === */
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #312e81;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.02);
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 1rem;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s;
+    opacity: 0;
+}
+
+.logo:hover .logo-icon::before {
+    animation: shine 0.6s ease-in-out;
+    opacity: 1;
+}
+
+@keyframes shine {
+    0% { transform: translate(-100%, -100%) rotate(45deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translate(100%, 100%) rotate(45deg); opacity: 0; }
+}
+
+.login-btn {
+            background: linear-gradient(135deg, #4f46e5, #855ec7ff);
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: #4f46e5;
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #374151;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        /* Add this to your existing CSS */
+.nav-items {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center; /* Ensures vertical alignment */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Adjust login button if needed */
+.login-btn {
+    margin-left: 1rem; /* Adds spacing between nav items and button */
+    white-space: nowrap; /* Prevents text wrapping */
+}
+
     </style>
 </head>
 <body>
+ <!-- Navbar -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">YC</div>
+            YouthConnect
+        </a>
+        
+        <div class="nav-items"> <!-- New wrapper div -->
+            <ul class="nav-links">
+                <li><a href="{{ path('home') }}" class="nav-link">Home</a></li>
+            </ul>
+            
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
+            {% else %}
+                <a href="{{ path('app_register') }}" class="login-btn">Login</a>
+            {% endif %}
+            
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+        </div>
+    </div>
+</nav>
     <div class="container">
         <!-- Booking Form -->
         <div class="booking-card">
@@ -514,6 +690,7 @@
             </div>
         </div>
     </div>
+    
 
     <script>
           //AJAX to collect info to filter 
@@ -786,4 +963,5 @@
 
     </script>
 </body>
+
 </html>
