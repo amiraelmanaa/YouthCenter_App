@@ -706,7 +706,7 @@
                     document.getElementById(`assignment-${technicianId}`).value = '';
                     document.getElementById(`priority-${technicianId}`).value = 'low';
                     
-                    // Update technician status if needed
+                    // Update technician status 
                     if (data.technicianStatus === 'busy') {
                         const technicianItem = button.closest('.technician-item');
                         const statusBadge = technicianItem.querySelector('.status-badge');

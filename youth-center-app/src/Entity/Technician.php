@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TechnicianRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TechnicianRepository::class)]
@@ -30,6 +32,17 @@ class Technician
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, Assignment>
+     */
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'technician')]
+    private Collection $assignments;
+
+    public function __construct()
+    {
+        $this->assignments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -111,6 +124,36 @@ class Technician
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Assignment>
+     */
+    public function getAssignments(): Collection
+    {
+        return $this->assignments;
+    }
+
+    public function addAssignment(Assignment $assignment): static
+    {
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments->add($assignment);
+            $assignment->setTechnician($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): static
+    {
+        if ($this->assignments->removeElement($assignment)) {
+            // set the owning side to null (unless already changed)
+            if ($assignment->getTechnician() === $this) {
+                $assignment->setTechnician(null);
+            }
+        }
 
         return $this;
     }

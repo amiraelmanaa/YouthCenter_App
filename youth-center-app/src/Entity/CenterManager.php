@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CenterManagerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CenterManagerRepository::class)]
@@ -24,6 +26,17 @@ class CenterManager
 
     #[ORM\OneToOne(mappedBy: 'Manager_ID', cascade: ['persist', 'remove'])]
     private ?Center $center = null;
+
+    /**
+     * @var Collection<int, Assignment>
+     */
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'manager')]
+    private Collection $assignments;
+
+    public function __construct()
+    {
+        $this->assignments = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -99,6 +112,36 @@ class CenterManager
 {
     return $this->name . ' ' . $this->lastname;
 }
+
+    /**
+     * @return Collection<int, Assignment>
+     */
+    public function getAssignments(): Collection
+    {
+        return $this->assignments;
+    }
+
+    public function addAssignment(Assignment $assignment): static
+    {
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments->add($assignment);
+            $assignment->setManager($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): static
+    {
+        if ($this->assignments->removeElement($assignment)) {
+            // set the owning side to null (unless already changed)
+            if ($assignment->getManager() === $this) {
+                $assignment->setManager(null);
+            }
+        }
+
+        return $this;
+    }
 
    
 
