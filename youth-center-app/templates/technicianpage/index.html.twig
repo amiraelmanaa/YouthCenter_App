@@ -110,6 +110,37 @@
         margin-bottom: 0.5rem;
     }
     
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        text-align: center;
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #64748b;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
     /* Assignments Section */
     .assignments-section {
         background: white;
@@ -161,7 +192,6 @@
         border-radius: 8px;
         padding: 1.5rem;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-        cursor: pointer;
     }
     
     .assignment-card:hover {
@@ -192,7 +222,7 @@
         text-transform: uppercase;
     }
     
-    .priority-high {
+    .priority-high, .priority-urgent {
         background: #fee2e2;
         color: #dc2626;
     }
@@ -224,6 +254,7 @@
         display: flex;
         gap: 0.5rem;
         margin-top: 1rem;
+        flex-wrap: wrap;
     }
     
     .btn {
@@ -232,18 +263,42 @@
         border-radius: 5px;
         cursor: pointer;
         font-size: 0.9rem;
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease;
         text-decoration: none;
         display: inline-block;
         text-align: center;
+        font-weight: 500;
     }
     
-    .btn-primary {
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .btn-accept {
+        background: #16a34a;
+        color: white;
+    }
+    
+    .btn-accept:hover:not(:disabled) {
+        background: #15803d;
+    }
+    
+    .btn-decline {
+        background: #dc2626;
+        color: white;
+    }
+    
+    .btn-decline:hover:not(:disabled) {
+        background: #b91c1c;
+    }
+    
+    .btn-complete {
         background: #3b82f6;
         color: white;
     }
     
-    .btn-primary:hover {
+    .btn-complete:hover:not(:disabled) {
         background: #2563eb;
     }
     
@@ -269,12 +324,16 @@
         background: #f59e0b;
     }
     
-    .status-in-progress {
+    .status-accepted {
         background: #3b82f6;
     }
     
-    .status-urgent {
+    .status-declined {
         background: #dc2626;
+    }
+    
+    .status-completed {
+        background: #16a34a;
     }
     
     /* Empty State */
@@ -287,6 +346,45 @@
     .empty-state h3 {
         margin-bottom: 1rem;
         color: #374151;
+    }
+    
+    .empty-state .icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+    
+    /* Notification */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 5px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification.success {
+        background-color: #16a34a;
+    }
+    
+    .notification.error {
+        background-color: #dc2626;
+    }
+    
+    /* Loading State */
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
     }
     
     /* Responsive Design */
@@ -316,6 +414,24 @@
         .dashboard-title {
             font-size: 1.5rem;
         }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .card-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -323,8 +439,6 @@
     <div class="nav-container">
         <a href="#" class="nav-brand">YouthCenter Maintenance</a>
         <ul class="nav-links">
-           
-            <li> {#<a href="{{ path('support') }}">Support</a>#} </li>
             <li><a href="{{ path('app_logout') }}" class="logout">Logout</a></li>
         </ul>
     </div>
@@ -338,7 +452,27 @@
     
     <div class="welcome-message">
         <h2>Welcome back, {{ controller_name }}!</h2>
-        <p>You have pending maintenance assignments that require your attention.</p>
+        <p>You have {{ assignments|filter(a => a.status == 'pending')|length }} pending maintenance assignments that require your attention.</p>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ assignments|length }}</div>
+            <div class="stat-label">Total Assignments</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ assignments|filter(a => a.status == 'pending')|length }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ assignments|filter(a => a.status == 'accepted')|length }}</div>
+            <div class="stat-label">Accepted</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ assignments|filter(a => a.status == 'completed')|length }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
     </div>
     
     <div class="assignments-section">
@@ -348,146 +482,199 @@
         </div>
         
         <div class="assignments-grid">
-            <!-- Empty assignment cards - ready for your data -->
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Center Name</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-pending"></span>
-                            Status: Pending
-                        </p>
+            {% if assignments|length > 0 %}
+                {% for assignment in assignments %}
+                <div class="assignment-card" data-assignment-id="{{ assignment.id }}">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="center-name">{{ assignment.manager.center.name ?? 'Center Name' }}</h3>
+                            <p style="color: #64748b; font-size: 0.9rem;">
+                                <span class="status-indicator status-{{ assignment.status }}"></span>
+                                Status: {{ assignment.status|title }}
+                            </p>
+                        </div>
+                        <span class="priority-badge priority-{{ assignment.priority }}">{{ assignment.priority|title }} Priority</span>
                     </div>
-                    <span class="priority-badge priority-medium">Medium Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Description of the issue</p>
-                    <p><strong>Location:</strong> Center address</p>
-                    <p><strong>Reported:</strong> Time reported</p>
-                    <p><strong>Contact:</strong> Contact person and phone</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Center Name</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-urgent"></span>
-                            Status: Urgent
-                        </p>
+                    <div class="card-details">
+                        <p><strong>Issue:</strong> {{ assignment.description ?: 'No description provided' }}</p>
+                        <p><strong>Manager:</strong> {{ assignment.manager.name ?: 'N/A' }}</p>
+                        <p><strong>Contact:</strong> {{ assignment.manager.email ?: 'N/A' }}</p>
+                        <p><strong>Assigned:</strong> {{ assignment.id ? 'Recently' : 'N/A' }}</p>
                     </div>
-                    <span class="priority-badge priority-high">High Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Description of the issue</p>
-                    <p><strong>Location:</strong> Center address</p>
-                    <p><strong>Reported:</strong> Time reported</p>
-                    <p><strong>Contact:</strong> Contact person and phone</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Center Name</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-in-progress"></span>
-                            Status: In Progress
-                        </p>
+                    
+                    <div class="card-actions">
+                        {% if assignment.status == 'pending' %}
+                            <button class="btn btn-accept" onclick="handleAssignment({{ assignment.id }}, 'accept')">
+                                Accept Task
+                            </button>
+                            <button class="btn btn-decline" onclick="handleAssignment({{ assignment.id }}, 'decline')">
+                                Decline
+                            </button>
+                        {% elseif assignment.status == 'accepted' %}
+                            <button class="btn btn-complete" onclick="handleAssignment({{ assignment.id }}, 'complete')">
+                                Mark Complete
+                            </button>
+                        {% elseif assignment.status == 'completed' %}
+                            <button class="btn btn-secondary" disabled>
+                                Completed ✓
+                            </button>
+                        {% elseif assignment.status == 'declined' %}
+                            <button class="btn btn-secondary" disabled>
+                                Declined
+                            </button>
+                        {% endif %}
                     </div>
-                    <span class="priority-badge priority-low">Low Priority</span>
                 </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Description of the issue</p>
-                    <p><strong>Location:</strong> Center address</p>
-                    <p><strong>Reported:</strong> Time reported</p>
-                    <p><strong>Contact:</strong> Contact person and phone</p>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="icon">🔧</div>
+                    <h3>No assignments yet</h3>
+                    <p>New maintenance assignments will appear here when they're assigned to you.</p>
                 </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Update Status</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Center Name</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-pending"></span>
-                            Status: Pending
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-medium">Medium Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Description of the issue</p>
-                    <p><strong>Location:</strong> Center address</p>
-                    <p><strong>Reported:</strong> Time reported</p>
-                    <p><strong>Contact:</strong> Contact person and phone</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Center Name</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-urgent"></span>
-                            Status: Urgent
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-high">High Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Description of the issue</p>
-                    <p><strong>Location:</strong> Center address</p>
-                    <p><strong>Reported:</strong> Time reported</p>
-                    <p><strong>Contact:</strong> Contact person and phone</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Accept Task</a>
-                </div>
-            </div>
-            
-            <div class="assignment-card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="center-name">Center Name</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            <span class="status-indicator status-in-progress"></span>
-                            Status: In Progress
-                        </p>
-                    </div>
-                    <span class="priority-badge priority-low">Low Priority</span>
-                </div>
-                <div class="card-details">
-                    <p><strong>Issue:</strong> Description of the issue</p>
-                    <p><strong>Location:</strong> Center address</p>
-                    <p><strong>Reported:</strong> Time reported</p>
-                    <p><strong>Contact:</strong> Contact person and phone</p>
-                </div>
-                <div class="card-actions">
-                    <a href="#" class="btn btn-primary">View Details</a>
-                    <a href="#" class="btn btn-secondary">Update Status</a>
-                </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<!-- Notification -->
+<div id="notification" class="notification"></div>
+
+<script>
+// Notification System
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 4000);
+}
+
+// Handle Assignment Actions
+function handleAssignment(assignmentId, action) {
+    const button = event.target;
+    const card = button.closest('.assignment-card');
+    
+  
+    button.classList.add('loading');
+    button.disabled = true;
+    
+    let endpoint = '';
+    let successMessage = '';
+    
+    switch(action) {
+        case 'accept':
+            endpoint = `/technician/assignment/${assignmentId}/accept`;
+            successMessage = 'Assignment accepted successfully!';
+            break;
+        case 'decline':
+            endpoint = `/technician/assignment/${assignmentId}/decline`;
+            successMessage = 'Assignment declined';
+            break;
+        case 'complete':
+            endpoint = `/technician/assignment/${assignmentId}/complete`;
+            successMessage = 'Assignment marked as completed!';
+            break;
+        default:
+            console.error('Invalid action:', action);
+            return;
+    }
+    
+    // Make API call
+    fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showNotification(successMessage, 'success');
+            
+         
+            updateCardStatus(card, data.status);
+            updateStatistics();
+            
+        } else {
+            showNotification(data.message || 'Error processing request', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Network error. Please try again.', 'error');
+    })
+    .finally(() => {
+        button.classList.remove('loading');
+        button.disabled = false;
+    });
+}
+
+// Update card status and actions
+function updateCardStatus(card, newStatus) {
+    const statusIndicator = card.querySelector('.status-indicator');
+    const statusText = card.querySelector('.card-header p');
+    const actionsContainer = card.querySelector('.card-actions');
+    
+    
+    statusIndicator.className = `status-indicator status-${newStatus}`;
+    
+    
+    statusText.innerHTML = `<span class="status-indicator status-${newStatus}"></span>Status: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`;
+    
+    
+    let newButtons = '';
+    switch(newStatus) {
+        case 'accepted':
+            newButtons = `<button class="btn btn-complete" onclick="handleAssignment(${card.dataset.assignmentId}, 'complete')">Mark Complete</button>`;
+            break;
+        case 'completed':
+            newButtons = `<button class="btn btn-secondary" disabled>Completed ✓</button>`;
+            break;
+        case 'declined':
+            newButtons = `<button class="btn btn-secondary" disabled>Declined</button>`;
+            break;
+    }
+    
+    actionsContainer.innerHTML = newButtons;
+}
+
+// Update statistics
+function updateStatistics() {
+    
+    setTimeout(() => {
+    }, 1000);
+}
+
+// Auto-refresh functionality 
+function startAutoRefresh() {
+    setInterval(() => {
+        // Check for new assignments every 30 seconds
+        fetch('/technician/dashboard', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            
+            console.log('Checked for updates');
+        })
+        .catch(error => {
+            console.error('Auto-refresh error:', error);
+        });
+    }, 30000); // 30 seconds
+}
+
+</script>
 
 {% endblock %}
