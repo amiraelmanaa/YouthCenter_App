@@ -6,6 +6,7 @@ use App\Repository\CenterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Activities;
 
 #[ORM\Entity(repositoryClass: CenterRepository::class)]
 class Center
@@ -42,7 +43,7 @@ class Center
     /**
      * @var Collection<int, Activities>
      */
-    #[ORM\ManyToMany(targetEntity: Activities::class, mappedBy: 'centers')]
+    #[ORM\ManyToMany(targetEntity: Activities::class, mappedBy: 'centers', cascade: ['persist'])]
     private Collection $activities;
 
     #[ORM\OneToOne(inversedBy: 'center', cascade: ['persist', 'remove'])]
@@ -282,4 +283,6 @@ class Center
 
         return $this;
     }
+
+
 }

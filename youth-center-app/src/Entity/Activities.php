@@ -6,6 +6,7 @@ use App\Repository\ActivitiesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Center;
 
 #[ORM\Entity(repositoryClass: ActivitiesRepository::class)]
 class Activities
@@ -24,7 +25,7 @@ class Activities
     /**
      * @var Collection<int, Center>
      */
-    #[ORM\ManyToMany(targetEntity: Center::class, inversedBy: 'activities')]
+    #[ORM\ManyToMany(targetEntity: Center::class, inversedBy: 'activities', cascade: ['persist'])]
     private Collection $centers;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -80,14 +81,16 @@ class Activities
         return $this->centers;
     }
 
-    public function addCenter(Center $centerId): static
-    {
-        if (!$this->centers->contains($centerId)) {
-            $this->centers->add($centerId);
-        }
-
-        return $this;
+    public function addCenter(Center $center): static
+{
+    if (!$this->centers->contains($center)) {
+        $this->centers->add($center);
+        $center->addActivity($this); 
     }
+
+    return $this;
+}
+
 
     public function removeCenter(Center $centerId): static
     {

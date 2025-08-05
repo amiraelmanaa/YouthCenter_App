@@ -29,7 +29,8 @@ class CenterCrudController extends AbstractCrudController
             TextField::new('phone')->setRequired(false),
             TextField::new('email')->setRequired(false),
             AssociationField::new('Manager_ID')->setRequired(false),
-            AssociationField::new('activities'),
+            AssociationField::new('activities')
+              ->setFormTypeOption('by_reference', false),
             \EasyCorp\Bundle\EasyAdminBundle\Field\NumberField::new('nb_rooms')->setRequired(true),
             AssociationField::new('pictures')
                 ->setFormTypeOption('by_reference', false)
