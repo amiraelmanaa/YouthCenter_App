@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\AssignmentRepository;
@@ -17,7 +16,7 @@ class Assignment
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    private string $status = 'pending'; 
 
     #[ORM\Column(length: 255)]
     private ?string $priority = null;
@@ -38,7 +37,6 @@ class Assignment
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -50,7 +48,6 @@ class Assignment
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -62,7 +59,6 @@ class Assignment
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -74,7 +70,6 @@ class Assignment
     public function setPriority(string $priority): static
     {
         $this->priority = $priority;
-
         return $this;
     }
 
@@ -86,7 +81,6 @@ class Assignment
     public function setManager(?CenterManager $manager): static
     {
         $this->manager = $manager;
-
         return $this;
     }
 
@@ -98,7 +92,6 @@ class Assignment
     public function setTechnician(?Technician $technician): static
     {
         $this->technician = $technician;
-
         return $this;
     }
 }

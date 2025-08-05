@@ -510,20 +510,24 @@
                             {% if technician.status == 'available' %}
                             <div class="tech-assignment">
                                 <div class="assignment-form">
-                                    <div class="assignment-input">
-                                        <input type="text" placeholder="Assignment description..." id="assignment-{{ technician.id }}">
-                                    </div>
-                                    <select class="priority-select" id="priority-{{ technician.id }}">
-                                        <option value="low">Low Priority</option>
-                                        <option value="medium">Medium Priority</option>
-                                        <option value="high">High Priority</option>
-                                        <option value="urgent">Urgent</option>
-                                    </select>
-                                    <button class="btn btn-assign" onclick="assignTechnician({{ technician.id }})">
-                                        Assign
-                                    </button>
-                                </div>
-                            </div>
+                                    <form method="POST" action="{{ path('manager_assign_technician') }}" class="assignment-form">
+                                         <input type="hidden" name="token" value="{{ csrf_token('assign-technician') }}">
+                                       
+                                        <input type="hidden" name="technician_id" value="{{ technician.id }}">
+                                        <div class="assignment-input">
+                                            <input type="text" name="description" placeholder="Assignment description..." required>
+                                        </div>
+                                        <select class="priority-select" name="priority" required>
+                                            <option value="low">Low Priority</option>
+                                            <option value="medium">Medium Priority</option>
+                                            <option value="high">High Priority</option>
+                                            <option value="urgent">Urgent</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-assign">Assign</button>
+                                    </form>
+
+
+                                  </div>
                             {% endif %}
                         </div>
                         {% endfor %}
