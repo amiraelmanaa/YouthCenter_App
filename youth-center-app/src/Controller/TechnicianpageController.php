@@ -27,7 +27,7 @@ final class TechnicianpageController extends AbstractController
      //index 
    #[Route('/technicianpage', name: 'app_technicianpage')]
 public function index(): Response
-{
+{   
     $user = $this->security->getUser();
     if (!$user) {
         return $this->redirectToRoute('app_login');
@@ -46,6 +46,7 @@ public function index(): Response
     return $this->render('technicianpage/index.html.twig', [
         'controller_name' => $technician->getName(),
         'assignments' => $assignments,
+        'technician' => $technician,
     ]);
 }
 
@@ -204,4 +205,48 @@ public function index(): Response
             return new JsonResponse(['success' => false, 'message' => 'Failed to complete assignment'], 500);
         }
     }
+
+
+
+    // Update Technician Profile
+    #[Route('/technician/update-profile', name: 'technician_update_profile', methods: ['POST'])]
+public function updateProfile(Request $request): JsonResponse
+{
+    $user = $this->security->getUser();
+    if (!$user) {
+        return new JsonResponse(['success' => false, 'message' => 'Not authenticated'], 401);
+    }
+
+    $technician = $this->em->getRepository(Technician::class)
+        ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+    if (!$technician) {
+        return new JsonResponse(['success' => false, 'message' => 'Technician not found'], 404);
+    }
+
+    $data = json_decode($request->getContent(), true);
+
+    if (!isset($data['name'], $data['email'])) {
+        return new JsonResponse(['success' => false, 'message' => 'Invalid data'], 400);
+    }
+
+    try {
+        $technician->setName($data['name']);
+        $technician->setEmail($data['email']);
+        $technician->setPhone($data['phone'] ?? null);
+
+        $this->em->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Profile updated successfully',
+        ]);
+    } catch (\Exception $e) {
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Failed to update profile',
+        ], 500);
+    }
+}
+
 }

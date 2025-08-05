@@ -433,6 +433,25 @@
             grid-template-columns: 1fr;
         }
     }
+
+  /* Technician info */
+.form-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #374151;
+    background-color: #fff;
+}
+
+.form-input:disabled {
+    background-color: #f1f5f9;
+}
+
+
 </style>
 
 <nav class="navbar">
@@ -537,8 +556,44 @@
     </div>
 </div>
 
+
 <!-- Notification -->
 <div id="notification" class="notification"></div>
+
+
+<!-- Technician Info -->
+<div class="dashboard-header">
+    <h2 class="dashboard-title">Your Profile</h2>
+    <p class="dashboard-subtitle">View and edit your technician information.</p>
+</div>
+
+<div class="assignments-section" style="margin-bottom: 2rem;">
+    <form id="profile-form" class="assignments-grid" style="grid-template-columns: 1fr;">
+        <div class="assignment-card">
+            <div class="card-details">
+                <p>
+                    <strong>Name:</strong>
+                    <input type="text" id="tech-name" name="name" value="{{ technician.name }}" disabled class="form-input" />
+                </p>
+                <p>
+                    <strong>Email:</strong>
+                    <input type="email" id="tech-email" name="email" value="{{ technician.email }}" disabled class="form-input" />
+                </p>
+                <p>
+                    <strong>Phone:</strong>
+                    <input type="text" id="tech-phone" name="phone" value="{{ technician.phone ?? '' }}" disabled class="form-input" />
+                </p>
+            </div>
+
+            <div class="card-actions">
+                <button type="button" class="btn btn-secondary" onclick="enableEdit()">Edit</button>
+                <button type="submit" class="btn btn-complete" style="display: none;">Save</button>
+                <button type="button" class="btn btn-decline" onclick="cancelEdit()" style="display: none;">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
+
 
 <script>
 // Notification System
@@ -674,6 +729,56 @@ function startAutoRefresh() {
         });
     }, 30000); // 30 seconds
 }
+
+function enableEdit() {
+    document.querySelectorAll('#profile-form input').forEach(input => input.disabled = false);
+    document.querySelector('#profile-form .btn-complete').style.display = 'inline-block';
+    document.querySelector('#profile-form .btn-decline').style.display = 'inline-block';
+    document.querySelector('#profile-form .btn-secondary').style.display = 'none';
+}
+
+// Cancel editing
+function cancelEdit() {
+    location.reload(); // Reload to reset form
+}
+
+// Handle form submission
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = {
+        name: document.getElementById('tech-name').value,
+        email: document.getElementById('tech-email').value,
+        phone: document.getElementById('tech-phone').value
+    };
+
+    fetch('/technician/update-profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Update failed');
+        return res.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showNotification('Profile updated successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showNotification(data.message || 'Update error', 'error');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showNotification('Network error', 'error');
+    });
+});
+
+
 
 </script>
 
