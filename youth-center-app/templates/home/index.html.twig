@@ -837,8 +837,19 @@
                 <li><a href="#home" class="nav-link">Home</a></li>
                 <li><a href="#features" class="nav-link">Features</a></li>
                 <li><a href="#pricing" class="nav-link">Pricing</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="{{ path('app_about') }}" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li>
+                {% if app.user %}
+                    <a href="{{ path('app_user_bookings_journal') }}" class="nav-link">My Bookings</a>
+                {% else %}
+                    <a href="#" 
+                       class="nav-link" 
+                       onclick="alert('Please log in first to access your bookings.'); return false;">
+                        My Bookings
+                    </a>
+                {% endif %}
+            </li>
                 <li>
                 {% if app.user %}
                  <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
