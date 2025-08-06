@@ -946,15 +946,17 @@
             <a href="{{ path('home') }}" class="navbar-brand">
                 YouthConnect
             </a>
-            <ul class="navbar-nav">
+             <ul class="navbar-nav">
                 <li><a href="{{ path('home') }}" class="nav-link">Home</a></li>
-                <li><a href="{{ path('app_user_bookings_journal') }}" class="nav-link active">My Bookings</a></li>
-                <li><a href="#" class="nav-link">Centers</a></li>
-                <li><a href="#" class="nav-link">Support</a></li>
+                <li><a href="#" class="nav-link active">My Bookings</a></li>
+                <li>
+                {% if app.user %}
+                 <a href="{{ path('app_logout') }}" class="logout-btn">Logout</a>
+                 {% else %}
+                  <a href="{{ path('app_register') }}" class="login-btn">Login</a>
+                  {% endif %}
+                </li>
             </ul>
-            <div class="user-menu">
-                <a href="#" class="logout-btn">Logout</a>
-            </div>
         </div>
     </nav>
 

@@ -16,7 +16,19 @@
             --secondary-light: #a78bfa;
             --secondary-dark: #7c3aed;
             --accent-color: #06b6d4;
-            --accent-light: #22d3ee;
+             --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary-color: #1e293b;
+            --secondary-light: #334155;
+            --secondary-dark: #0f172a;
+            --accent-color: #8b5cf6;
+            --accent-light: #a78bfa;
+            --accent-dark: #7c3aed;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            
             
             /* Neutrals - Light & Bright */
             --bg-primary: #fefefe;
@@ -26,6 +38,14 @@
             --text-primary: #1e293b;
             --text-secondary: #64748b;
             --text-muted: #94a3b8;
+
+            /* Backgrounds */
+            --bg-primary: #fefefe;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --bg-purple-light: #f3f4ff;
+            --bg-navy-light: #f1f5f9;
+            
             
             /* Borders and Shadows */
             --border-color: #e2e8f0;
@@ -107,9 +127,16 @@
             from { transform: translateY(-100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        .navbar{
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+        }
 
         .navbar-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -693,10 +720,14 @@
             <ul class="navbar-nav">
                 <li><a href="{{ path('home') }}" class="nav-link">Home</a></li>
                 <li><a href="#" class="nav-link active">My Bookings</a></li>
+                <li>
+                {% if app.user %}
+                 <a href="{{ path('app_logout') }}" class="logout-btn">Logout</a>
+                 {% else %}
+                  <a href="{{ path('app_register') }}" class="login-btn">Login</a>
+                  {% endif %}
+                </li>
             </ul>
-            <div class="user-menu">
-                <a href="#" class="logout-btn">Logout</a>
-            </div>
         </div>
     </nav>
 
