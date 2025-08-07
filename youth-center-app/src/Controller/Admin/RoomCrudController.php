@@ -23,7 +23,6 @@ class RoomCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             NumberField::new('capacity', 'Room Capacity'),
             NumberField::new('price_per_night', 'Price per Night'),
             BooleanField::new('is_group_only', 'Group Only'),
