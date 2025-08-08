@@ -850,7 +850,7 @@
                             </form>
                             <div class="success-message" id="success-${room.id}">
                                 <i class="fas fa-check-circle"></i>
-                                Reservation successful! We'll contact you soon.
+                                Reservation successful! Go to My Bookings to procceed payment step.
                             </div>
                         </div>
                     </div>
@@ -872,6 +872,14 @@
         }
 
         function showReservationForm(roomId, startDate, endDate, guests) {
+             const isLoggedIn = {{ app.user ? 'true' : 'false' }};
+            
+             if (!isLoggedIn) {
+                alert("You must be logged in to make a reservation.");
+                window.location.href = "{{ path('app_login') }}";
+                return;
+    }
+            
             const form = document.getElementById(`reservation-form-${roomId}`);
             form.classList.add('show');
             

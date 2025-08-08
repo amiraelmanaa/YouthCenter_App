@@ -38,8 +38,18 @@ class Booking
     #[ORM\Column(nullable: true)]
     private ?int $guestsCount = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $totalPrice = null;
+   #[ORM\Column(nullable: true)]
+private ?float $totalPrice = null;
+
+public function updateTotalPrice(): void
+{
+    if ($this->startDate && $this->endDate && $this->room) {
+        $nights = $this->calculateNights($this->startDate, $this->endDate);
+        $this->totalPrice = $nights * $this->room->getPricePerNight();
+    } else {
+        $this->totalPrice = null;
+    }
+}
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
@@ -79,6 +89,7 @@ class Booking
     public function setStartDate(\DateTime $startDate): static
     {
         $this->startDate = $startDate;
+        $this->updateTotalPrice();
 
         return $this;
     }
@@ -91,6 +102,7 @@ class Booking
     public function setEndDate(\DateTime $endDate): static
     {
         $this->endDate = $endDate;
+        $this->updateTotalPrice();
 
         return $this;
     }

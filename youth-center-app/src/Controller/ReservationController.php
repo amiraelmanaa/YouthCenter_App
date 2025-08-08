@@ -76,7 +76,7 @@ public function createBooking(Request $request, RoomRepository $roomRepository, 
     $booking->setAge($data['age']);
     $booking->setEmail($data['email']);
     $booking->setStatus('pending');
-
+    $booking->updateTotalPrice();
     $em->persist($booking);
     $em->flush();
 
