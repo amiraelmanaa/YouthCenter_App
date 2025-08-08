@@ -21,8 +21,8 @@ final class Version20250804123517 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
        // $this->addSql('CREATE TABLE assignment (id INT AUTO_INCREMENT NOT NULL, manager_id INT NOT NULL, technician_id INT NOT NULL, description VARCHAR(1000) DEFAULT NULL, status VARCHAR(255) NOT NULL, priority VARCHAR(255) NOT NULL, INDEX IDX_30C544BA783E3463 (manager_id), INDEX IDX_30C544BAE6C5D496 (technician_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE assignment ADD CONSTRAINT FK_30C544BA783E3463 FOREIGN KEY (manager_id) REFERENCES center_manager (id)');
-        $this->addSql('ALTER TABLE assignment ADD CONSTRAINT FK_30C544BAE6C5D496 FOREIGN KEY (technician_id) REFERENCES technician (id)');
+        $this->addSql('ALTER TABLE assignment ADD CONSTRAINT FK_assignment_manager FOREIGN KEY (manager_id) REFERENCES center_manager (id)');
+        $this->addSql('ALTER TABLE assignment ADD CONSTRAINT FK_assignment_technician FOREIGN KEY (technician_id) REFERENCES technician (id)');
     }
 
     public function down(Schema $schema): void

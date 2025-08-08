@@ -32,14 +32,16 @@ final class UserBookingsJournalController extends AbstractController
        
         $queryBuilder = $entityManager->getRepository(Booking::class)->createQueryBuilder('b');
         
-   
-        if ($user && method_exists($user, 'getEmail')) {
-            $queryBuilder->where('b.email = :email')
-                        ->setParameter('email', $user->getEmail());
-        } else {
-           
-            $queryBuilder->where('1 = 0'); 
-        }
+            
+                if ($user instanceof User) {
+                $queryBuilder
+                    ->where('b.email = :email')
+                    ->orWhere('b.user = :user')
+                    ->setParameter('email', $user->getEmail())
+                    ->setParameter('user', $user);
+            } else {
+                $queryBuilder->where('1 = 0'); 
+            }
         
         if ($status !== 'all') {
             $queryBuilder->andWhere('b.status = :status')
@@ -100,7 +102,8 @@ final class UserBookingsJournalController extends AbstractController
 
         if ($user && method_exists($user, 'getEmail')) {
 
-            if ($booking->getEmail() !== $user->getEmail()) {
+            if ($booking->getEmail() !== $user->getEmail() &&
+    $booking->getUser() !== $user) {
                 throw $this->createAccessDeniedException('You can only view your own bookings.');
             }
         }

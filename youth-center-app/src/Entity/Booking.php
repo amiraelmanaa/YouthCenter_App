@@ -57,6 +57,9 @@ public function updateTotalPrice(): void
     #[ORM\Column]
     private ?bool $isGroupBooking = null;
 
+    #[ORM\ManyToOne(inversedBy: 'bookings')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -200,5 +203,17 @@ public function updateTotalPrice(): void
     public function calculateNights(\DateTime $startDate, \DateTime $endDate): int
     {
         return (int) $startDate->diff($endDate)->format('%a');
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }
