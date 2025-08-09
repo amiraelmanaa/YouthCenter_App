@@ -37,10 +37,10 @@ class RoomRepository extends ServiceEntityRepository
 public function findAvailableRooms(\DateTime $start, \DateTime $end, int $guests, bool $isGroup, int $centerId)
 {
     $qb = $this->createQueryBuilder('r')
-        ->join('r.center', 'c') // join the center table
+        ->join('r.center', 'c') 
         ->andWhere('r.capacity >= :guests')
         ->andWhere('(r.is_group_only = :isGroup OR :isGroup = false)')
-        ->andWhere('c.id = :centerId') // now we can use c.id
+        ->andWhere('c.id = :centerId')
         ->andWhere('r.id NOT IN (
             SELECT r2.id FROM App\Entity\Booking b
             JOIN b.room r2
