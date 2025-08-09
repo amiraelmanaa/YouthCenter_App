@@ -691,244 +691,222 @@
         </div>
     </div>
     
+<script>
+    // Get centerId from Twig
+const centerId = {{ centerId }};
 
-    <script>
-          //AJAX to collect info to filter 
-        document.getElementById('search-form').addEventListener('submit', function(e) {
+// Set minimum dates
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('start_date').min = today;
+document.getElementById('end_date').min = today;
+
+// Date validation
+document.getElementById('start_date').addEventListener('change', function() {
+    document.getElementById('end_date').min = this.value;
+});
+
+// Handle form submission - AJAX to collect info to filter 
+document.getElementById('search-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
     const startDate = document.getElementById('start_date').value;
     const endDate = document.getElementById('end_date').value;
     const guests = document.getElementById('guests').value;
     const isGroup = document.getElementById('is_group').checked ? 1 : 0;
+    
 
-    fetch(`/reservation?start_date=${startDate}&end_date=${endDate}&guests=${guests}&is_group=${isGroup}`, {
+    // Simple validation
+    if (!startDate || !endDate || !guests) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    if (new Date(startDate) >= new Date(endDate)) {
+        alert('Check-out date must be after check-in date');
+        return;
+    }
+
+    // Fixed URL to include centerId
+    fetch(`/reservation/${centerId}?start_date=${startDate}&end_date=${endDate}&guests=${guests}&is_group=${isGroup}`, {
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
         }
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+    })
     .then(data => {
+        console.log('Received rooms:', data);
         displayRooms(data, startDate, endDate, guests);
     })
     .catch(err => {
         console.error('Error fetching rooms:', err);
+        alert('Error searching for rooms. Please try again.');
     });
 });
 
-        
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('start_date').min = today;
-        document.getElementById('end_date').min = today;
+function displayRooms(rooms, startDate, endDate, guests) {
+    const resultsSection = document.getElementById('results-section');
+    const noRoomsSection = document.getElementById('no-rooms-section');
+    const roomsGrid = document.getElementById('rooms-grid');
 
-        // Date validation
-        document.getElementById('start_date').addEventListener('change', function() {
-            document.getElementById('end_date').min = this.value;
-        });
+    if (rooms.length === 0) {
+        resultsSection.style.display = 'none';
+        noRoomsSection.style.display = 'block';
+        return;
+    }
 
-        // Handle form submission
-        document.getElementById('search-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const startDate = document.getElementById('start_date').value;
-            const endDate = document.getElementById('end_date').value;
-            const guests = document.getElementById('guests').value;
-            const isGroup = document.getElementById('is_group').checked;
+    noRoomsSection.style.display = 'none';
+    resultsSection.style.display = 'block';
 
-            // Simple validation
-            if (!startDate || !endDate || !guests) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            if (new Date(startDate) >= new Date(endDate)) {
-                alert('Check-out date must be after check-in date');
-                return;
-            }
-
-            // Filter rooms based on criteria (simplified logic)
-            const availableRooms = sampleRooms.filter(room => {
-                if (isGroup && !room.isGroupOnly) return false;
-                return room.capacity >= parseInt(guests);
-            });
-
-            displayRooms(availableRooms, startDate, endDate, guests);
-        });
-
-        function displayRooms(rooms, startDate, endDate, guests) {
-            const resultsSection = document.getElementById('results-section');
-            const noRoomsSection = document.getElementById('no-rooms-section');
-            const roomsGrid = document.getElementById('rooms-grid');
-
-            if (rooms.length === 0) {
-                resultsSection.style.display = 'none';
-                noRoomsSection.style.display = 'block';
-                return;
-            }
-
-            noRoomsSection.style.display = 'none';
-            resultsSection.style.display = 'block';
-
-            roomsGrid.innerHTML = rooms.map(room => `
-                <div class="room-card">
-                    <div class="room-header">
-                        <div class="room-details">
-                            <div class="room-detail">
-                                <i class="fas fa-users"></i>
-                                <span>${room.capacity} Guests</span>
-                            </div>
-                            <div class="room-detail">
-                                <span class="price-tag">€${room.pricePerNight}/night</span>
-                            </div>
-                            <div class="room-detail">
-                                <i class="fas fa-tag"></i>
-                                <span class="type-badge">
-                                    ${room.isGroupOnly ? 'Group Only' : 'Individual or Group'}
-                                </span>
-                            </div>
-                        </div>
+    roomsGrid.innerHTML = rooms.map(room => `
+        <div class="room-card">
+            <div class="room-header">
+                <div class="room-details">
+                    <div class="room-detail">
+                        <i class="fas fa-users"></i>
+                        <span>${room.capacity} Guests</span>
                     </div>
-                    
-                    <div class="room-body">
-                        <div class="calendar-container" id="calendar-${room.id}">
-                            <i class="fas fa-calendar-check"></i>
-                            Calendar loaded for Room ${room.id}
-                        </div>
-                        
-                        <button class="book-btn" onclick="showReservationForm(${room.id}, '${startDate}', '${endDate}', ${guests})">
-                            <i class="fas fa-check-circle"></i>
-                            Book This Room
-                        </button>
-
-                        <div class="reservation-form" id="reservation-form-${room.id}">
-                            <h4>
-                                <i class="fas fa-user-edit"></i>
-                                Reservation Details
-                            </h4>
-                            <form id="reservation-${room.id}">
-                                <div class="reservation-grid">
-                                    <div class="form-group">
-                                        <label for="first-name-${room.id}">
-                                            <i class="fas fa-user"></i>
-                                            First Name
-                                        </label>
-                                        <input type="text" id="first-name-${room.id}" name="first_name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="last-name-${room.id}">
-                                            <i class="fas fa-user"></i>
-                                            Last Name
-                                        </label>
-                                        <input type="text" id="last-name-${room.id}" name="last_name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="age-${room.id}">
-                                            <i class="fas fa-birthday-cake"></i>
-                                            Age
-                                        </label>
-                                        <input type="number" id="age-${room.id}" name="age" min="1" max="120" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email-${room.id}">
-                                            <i class="fas fa-envelope"></i>
-                                            Email
-                                        </label>
-                                        <input type="email" id="email-${room.id}" name="email" required>
-                                    </div>
-                            
-                                </div>
-                                <div>
-                                    <button type="submit" class="reserve-btn">
-                                        <i class="fas fa-bookmark"></i>
-                                        Reserve Room
-                                    </button>
-                                    <button type="button" class="cancel-btn" onclick="hideReservationForm(${room.id})">
-                                        <i class="fas fa-times"></i>
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
-                            <div class="success-message" id="success-${room.id}">
-                                <i class="fas fa-check-circle"></i>
-                                Reservation successful! Go to My Bookings to procceed payment step.
-                            </div>
-                        </div>
+                    <div class="room-detail">
+                        <span class="price-tag">€${room.pricePerNight}/night</span>
+                    </div>
+                    <div class="room-detail">
+                        <i class="fas fa-tag"></i>
+                        <span class="type-badge">
+                            ${room.isGroupOnly ? 'Group Only' : 'Individual or Group'}
+                        </span>
                     </div>
                 </div>
-            `).join('');
-
-            // Add event listeners for reservation forms
-            rooms.forEach(room => {
-                document.getElementById(`reservation-${room.id}`).addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    handleReservation(room.id);
-                });
-            });
-
-            // Scroll to results
-            setTimeout(() => {
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        }
-
-        function showReservationForm(roomId, startDate, endDate, guests) {
-             const isLoggedIn = {{ app.user ? 'true' : 'false' }};
+            </div>
             
-             if (!isLoggedIn) {
-                alert("You must be logged in to make a reservation.");
-                window.location.href = "{{ path('app_login') }}";
-                return;
-    }
-            
-            const form = document.getElementById(`reservation-form-${roomId}`);
-            form.classList.add('show');
-            
-            // Hide the book button
-            event.target.style.display = 'none';
-        }
-
-        function hideReservationForm(roomId) {
-            const form = document.getElementById(`reservation-form-${roomId}`);
-            form.classList.remove('show');
-            
-            // Show the book button again
-            const bookBtn = form.parentElement.querySelector('.book-btn');
-            bookBtn.style.display = 'block';
-            
-            // Clear form
-            document.getElementById(`reservation-${roomId}`).reset();
-            
-            // Hide success message
-            document.getElementById(`success-${roomId}`).classList.remove('show');
-        }
-
-        function handleReservation(roomId) {
-            const form = document.getElementById(`reservation-${roomId}`);
-            const firstName = document.getElementById(`first-name-${roomId}`).value;
-            const lastName = document.getElementById(`last-name-${roomId}`).value;
-            const age = document.getElementById(`age-${roomId}`).value;
-            const email = document.getElementById(`email-${roomId}`).value;
-
-
-            // Simple validation
-            if (!firstName || !lastName || !age || !email) {
-                alert('Please fill in all fields');
-                return;
-            }
-
-            // Simulate reservation process
-            setTimeout(() => {
-                document.getElementById(`success-${roomId}`).classList.add('show');
-                form.reset();
+            <div class="room-body">
+                <div class="calendar-container" id="calendar-${room.id}">
+                    <i class="fas fa-calendar-check"></i>
+                    Available for selected dates
+                </div>
                 
-                // Hide form after success
-                setTimeout(() => {
-                    hideReservationForm(roomId);
-                }, 3000);
-            }, 1000);
-        }
-        function handleReservation(roomId) {
+                <button class="book-btn" onclick="showReservationForm(${room.id}, '${startDate}', '${endDate}', ${guests})">
+                    <i class="fas fa-check-circle"></i>
+                    Book This Room
+                </button>
+
+                <div class="reservation-form" id="reservation-form-${room.id}">
+                    <h4>
+                        <i class="fas fa-user-edit"></i>
+                        Reservation Details
+                    </h4>
+                    <form id="reservation-${room.id}">
+                        <div class="reservation-grid">
+                            <div class="form-group">
+                                <label for="first-name-${room.id}">
+                                    <i class="fas fa-user"></i>
+                                    First Name
+                                </label>
+                                <input type="text" id="first-name-${room.id}" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name-${room.id}">
+                                    <i class="fas fa-user"></i>
+                                    Last Name
+                                </label>
+                                <input type="text" id="last-name-${room.id}" name="last_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="age-${room.id}">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    Age
+                                </label>
+                                <input type="number" id="age-${room.id}" name="age" min="1" max="120" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email-${room.id}">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
+                                </label>
+                                <input type="email" id="email-${room.id}" name="email" required>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="reserve-btn">
+                                <i class="fas fa-bookmark"></i>
+                                Reserve Room
+                            </button>
+                            <button type="button" class="cancel-btn" onclick="hideReservationForm(${room.id})">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                    <div class="success-message" id="success-${room.id}">
+                        <i class="fas fa-check-circle"></i>
+                        Reservation successful! Go to My Bookings to proceed to payment step.
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Add event listeners for reservation forms
+    rooms.forEach(room => {
+        document.getElementById(`reservation-${room.id}`).addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleReservation(room.id);
+        });
+    });
+
+    // Scroll to results
+    setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+}
+
+function showReservationForm(roomId, startDate, endDate, guests) {
+    const isLoggedIn = {{ app.user ? 'true' : 'false' }};
+    
+    if (!isLoggedIn) {
+        alert("You must be logged in to make a reservation.");
+        window.location.href = "{{ path('app_login') }}";
+        return;
+    }
+    
+    const form = document.getElementById(`reservation-form-${roomId}`);
+    form.classList.add('show');
+    
+    // Hide the book button
+    event.target.style.display = 'none';
+}
+
+function hideReservationForm(roomId) {
+    const form = document.getElementById(`reservation-form-${roomId}`);
+    form.classList.remove('show');
+    
+    // Show the book button again
+    const bookBtn = form.parentElement.querySelector('.book-btn');
+    bookBtn.style.display = 'block';
+    
+    // Clear form
+    document.getElementById(`reservation-${roomId}`).reset();
+    
+    // Hide success message
+    document.getElementById(`success-${roomId}`).classList.remove('show');
+}
+
+function handleReservation(roomId) {
     const form = document.getElementById(`reservation-${roomId}`);
+    const firstName = document.getElementById(`first-name-${roomId}`).value;
+    const lastName = document.getElementById(`last-name-${roomId}`).value;
+    const age = document.getElementById(`age-${roomId}`).value;
+    const email = document.getElementById(`email-${roomId}`).value;
+
+    // Simple validation
+    if (!firstName || !lastName || !age || !email) {
+        alert('Please fill in all fields');
+        return;
+    }
 
     const payload = {
         room_id: roomId,
@@ -936,10 +914,10 @@
         end_date: document.getElementById('end_date').value,
         guests: parseInt(document.getElementById('guests').value),
         is_group: document.getElementById('is_group').checked,
-        first_name: document.getElementById(`first-name-${roomId}`).value,
-        last_name: document.getElementById(`last-name-${roomId}`).value,
-        age: parseInt(document.getElementById(`age-${roomId}`).value),
-        email: document.getElementById(`email-${roomId}`).value,
+        first_name: firstName,
+        last_name: lastName,
+        age: parseInt(age),
+        email: email,
     };
 
     fetch('/booking', {
@@ -960,7 +938,7 @@
                 hideReservationForm(roomId);
             }, 3000);
         } else {
-            alert('Booking failed. Try again.');
+            alert('Booking failed: ' + (data.error || 'Unknown error'));
         }
     })
     .catch(err => {
@@ -968,8 +946,7 @@
         alert('An error occurred while saving your reservation.');
     });
 }
-
-    </script>
+</script>
 </body>
 
 </html>

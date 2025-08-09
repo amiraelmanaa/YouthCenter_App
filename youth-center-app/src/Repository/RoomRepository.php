@@ -34,20 +34,28 @@ class RoomRepository extends ServiceEntityRepository
     return $count === 0;
 }
 */
-public function findAvailableRooms(\DateTimeInterface $start, \DateTimeInterface $end, int $guests, bool $isGroup): array
+public function findAvailableRooms(\DateTime $start, \DateTime $end, int $guests, bool $isGroup, int $centerId)
 {
     $qb = $this->createQueryBuilder('r')
-        ->leftJoin('r.bookings', 'b')
-        ->where('r.capacity >= :guests')
-        ->andWhere('r.is_group_only = :isGroup OR r.is_group_only = false')
-        ->andWhere('b.startDate IS NULL OR (b.endDate <= :start OR b.startDate >= :end)')
+        ->join('r.center', 'c') // join the center table
+        ->andWhere('r.capacity >= :guests')
+        ->andWhere('(r.is_group_only = :isGroup OR :isGroup = false)')
+        ->andWhere('c.id = :centerId') // now we can use c.id
+        ->andWhere('r.id NOT IN (
+            SELECT r2.id FROM App\Entity\Booking b
+            JOIN b.room r2
+            WHERE b.startDate < :end AND b.endDate > :start
+        )')
         ->setParameter('guests', $guests)
         ->setParameter('isGroup', $isGroup)
+        ->setParameter('centerId', $centerId)
         ->setParameter('start', $start)
         ->setParameter('end', $end);
 
     return $qb->getQuery()->getResult();
 }
+
+
 
 
 }

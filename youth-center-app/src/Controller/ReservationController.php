@@ -19,8 +19,8 @@ use App\Repository\BookingRepository;
 final class ReservationController extends AbstractController
 {
 
-#[Route('/reservation', name: 'reservation')]
-public function index(Request $request, RoomRepository $roomRepository): Response
+#[Route('/reservation/{centerId}', name: 'reservation',requirements: ['id' => '\d+'])]
+public function index(Request $request, RoomRepository $roomRepository, int $centerId): Response
 {
     $rooms = [];
     $start = null;
@@ -33,8 +33,9 @@ public function index(Request $request, RoomRepository $roomRepository): Respons
         $end = new \DateTime($request->query->get('end_date'));
         $guests = (int) $request->query->get('guests');
         $isGroup = $request->query->has('is_group');
+        $centerId= (int) $request->query->get('centerId', $centerId);
 
-        $rooms = $roomRepository->findAvailableRooms($start, $end, $guests, $isGroup);
+        $rooms = $roomRepository->findAvailableRooms($start, $end, $guests, $isGroup,$centerId);
     }
 
     if ($request->isXmlHttpRequest()) {
@@ -52,6 +53,7 @@ public function index(Request $request, RoomRepository $roomRepository): Respons
 
     return $this->render('reservation/index.html.twig', [
         'rooms' => $rooms,
+        'centerId' => $centerId,
     ]);
 }
 #[Route('/booking', name: 'booking_create', methods: ['POST'])]
