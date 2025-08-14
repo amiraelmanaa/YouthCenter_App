@@ -148,4 +148,25 @@ final class UserBookingsJournalController extends AbstractController
         
         return $stats;
     }
+
+    #[Route('/payment/booking/{id}', name: 'payment_booking')]
+    public function paymentBooking(Booking $booking, BookingRepository $bookingRepository): Response
+    {
+        // Check if the booking exists  
+        if (!$booking) {
+            throw $this->createNotFoundException('Booking not found');
+        }
+        // Check if the booking is already paid
+        if ($booking->isPaid()) {
+            return $this->redirectToRoute('app_user_booking_detail', ['id' => $booking->getId()]);
+        }
+        // Check if the booking belongs to the current user
+        $user = $this->getUser();
+       
+        // Render the payment page with the booking details
+        return $this->render('payment/index.html.twig', [
+            'booking' => $booking,
+            'user' => $user,
+        ]);
+    }
 }

@@ -1128,7 +1128,10 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="action-buttons">
+                <div class="action-buttons"> <a href="{{ path('payment_booking', { id: booking.id }) }}" class="btn btn-primary">
+                        Pay now and confirm your Booking
+                    </a>
+
                     <a href="{{ path('app_user_bookings_journal') }}" class="btn btn-primary">
                         Back to All Bookings
                     </a>

@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - Réservation Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating Background Elements */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 80%;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            right: 30%;
+            animation-delay: 1s;
+        }
+
+        .floating-element:nth-child(5) {
+            width: 40px;
+            height: 40px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .payment-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 1s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -100%, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .booking-summary {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInLeft 1s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .booking-summary:hover::before {
+            left: 100%;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translate3d(-100%, 0, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .booking-summary h3 {
+            color: #4c1d95;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .booking-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .booking-info p {
+            margin-bottom: 0.8rem;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .booking-info strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .price-breakdown {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            color: #64748b;
+        }
+
+        .total-amount {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #4c1d95;
+            padding-top: 1rem;
+            border-top: 2px solid #e2e8f0;
+            margin-top: 1rem;
+        }
+
+        .payment-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 1s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            transition: left 0.8s;
+        }
+
+        .payment-form:hover::before {
+            left: 100%;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translate3d(100%, 0, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .payment-form h3 {
+            color: #4c1d95;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method {
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-method::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .payment-method:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        .payment-method.active {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-method div {
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .form-control:focus {
+            border-color: #8b5cf6;
+            outline: 0;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-section {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 40px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            border: none;
+            color: white;
+            padding: 1.2rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .security-info {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #059669;
+            text-align: center;
+        }
+
+        .security-info i {
+            color: #10b981;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .text-center {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            accent-color: #8b5cf6;
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            color: #64748b;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .payment-container {
+                padding: 0 0.5rem;
+                margin: 1rem auto;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .booking-summary,
+            .payment-form {
+                padding: 1.5rem;
+                border-radius: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-element {
+                display: none;
+            }
+
+            .booking-info {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading animation for submit button */
+        .btn-primary.loading {
+            pointer-events: none;
+        }
+
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-bg">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div class="payment-container">
+        <h1>Finaliser votre réservation</h1>
+        
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+            <h3>Résumé de la réservation #{{ booking.id }}</h3>
+            <div class="booking-info">
+                <div>
+                    <p><strong>Nom du client:</strong> {{ booking.guestName }} {{ booking.guestLastName }}</p>
+                    <p><strong>Email:</strong> {{ booking.email }}</p>
+                    <p><strong>Âge:</strong> {{ booking.age }} ans</p>
+                    <p><strong>Nombre d'invités:</strong> {{ booking.guestsCount }}</p>
+                </div>
+                <div>
+                    <p><strong>Chambre:</strong> {{ booking.room.name ?? 'N/A' }}</p>
+                    <p><strong>Date d'arrivée:</strong> {{ booking.startDate|date('d/m/Y') }}</p>
+                    <p><strong>Date de départ:</strong> {{ booking.endDate|date('d/m/Y') }}</p>
+                    <p><strong>Nombre de nuits:</strong> {{ booking.calculateNights(booking.startDate, booking.endDate) }}</p>
+                </div>
+            </div>
+            
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span>Prix par nuit:</span>
+                    <span>{{ booking.room.pricePerNight ?? 0 }}€</span>
+                </div>
+                <div class="price-row">
+                    <span>Nombre de nuits:</span>
+                    <span>{{ booking.calculateNights(booking.startDate, booking.endDate) }}</span>
+                </div>
+                <div class="price-row">
+                    <span>Taxes et frais:</span>
+                    <span>{{ (booking.totalPrice * 0.1)|number_format(2) }}€</span>
+                </div>
+                <div class="total-amount">
+                    <span>Total à payer:</span>
+                    <span>{{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="payment-form">
+            <h3>Informations de paiement</h3>
+            
+            <form method="POST" action="{{ path('payment_booking', {'id': booking.id}) }}" id="payment-form">
+                <!-- Payment Method Selection -->
+                <div class="form-group">
+                    <label>Méthode de paiement</label>
+                    <div class="payment-methods">
+                        <div class="payment-method active" data-method="card">
+                            <i class="fas fa-credit-card"></i>
+                            <div>Carte bancaire</div>
+                        </div>
+                        <div class="payment-method" data-method="paypal">
+                            <i class="fab fa-paypal"></i>
+                            <div>PayPal</div>
+                        </div>
+                        <div class="payment-method" data-method="bank">
+                            <i class="fas fa-university"></i>
+                            <div>Virement</div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="payment_method" id="payment_method" value="card">
+                </div>
+
+                <!-- Card Payment Form -->
+                <div id="card-payment" class="payment-section">
+                    <div class="form-group">
+                        <label for="card_holder">Nom du titulaire de la carte *</label>
+                        <input type="text" class="form-control" id="card_holder" name="card_holder" 
+                               value="{{ booking.guestName }} {{ booking.guestLastName }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card_number">Numéro de carte *</label>
+                        <input type="text" class="form-control" id="card_number" name="card_number" 
+                               placeholder="1234 5678 9012 3456" maxlength="19" required>
+                        <span class="error" id="card_number_error"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry_date">Date d'expiration *</label>
+                            <input type="text" class="form-control" id="expiry_date" name="expiry_date" 
+                                   placeholder="MM/AA" maxlength="5" required>
+                            <span class="error" id="expiry_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">Code CVV *</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv" 
+                                   placeholder="123" maxlength="4" required>
+                            <span class="error" id="cvv_error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PayPal Payment -->
+                <div id="paypal-payment" class="payment-section" style="display: none;">
+                    <p style="color: #64748b; text-align: center; margin-bottom: 1.5rem;">
+                        Vous serez redirigé vers PayPal pour finaliser votre paiement en toute sécurité.
+                    </p>
+                    <div class="form-group">
+                        <label for="paypal_email">Email PayPal</label>
+                        <input type="email" class="form-control" id="paypal_email" name="paypal_email" 
+                               value="{{ booking.email }}">
+                    </div>
+                </div>
+
+                <!-- Bank Transfer -->
+                <div id="bank-payment" class="payment-section" style="display: none;">
+                    <p style="color: #64748b; text-align: center; margin-bottom: 1.5rem;">
+                        Vous recevrez les détails du virement bancaire par email après confirmation.
+                    </p>
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Votre réservation sera confirmée après réception du paiement (2-3 jours ouvrés).
+                    </div>
+                </div>
+
+                <!-- Billing Address -->
+                <h4 style="color: #4c1d95; margin: 2rem 0 1.5rem 0; font-weight: 600;">Adresse de facturation</h4>
+                
+                <div class="form-group">
+                    <label for="billing_address">Adresse *</label>
+                    <input type="text" class="form-control" id="billing_address" name="billing_address" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="billing_city">Ville *</label>
+                        <input type="text" class="form-control" id="billing_city" name="billing_city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="billing_zip">Code postal *</label>
+                        <input type="text" class="form-control" id="billing_zip" name="billing_zip" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="billing_country">Pays *</label>
+                    <select class="form-control" id="billing_country" name="billing_country" required>
+                        <option value="">Sélectionnez un pays</option>
+                        <option value="FR" selected>France</option>
+                        <option value="BE">Belgique</option>
+                        <option value="CH">Suisse</option>
+                        <option value="CA">Canada</option>
+                        <option value="US">États-Unis</option>
+                    </select>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                        <label class="form-check-label" for="terms">
+                            <p>terms and conds</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="btn-primary" id="submit-payment">
+                        <i class="fas fa-lock"></i> Payer {{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€
+                    </button>
+                </div>
+
+                <!-- Security Info -->
+                <div class="security-info">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Paiement sécurisé</strong><br>
+                    Vos informations de paiement sont protégées par un cryptage SSL 256 bits. 
+                    Nous ne stockons aucune information de carte bancaire sur nos serveurs.
+                </div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                <input type="hidden" name="amount" value="{{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2, '.', '') }}">
+                {{ csrf_token('payment_' ~ booking.id) }}
+            </form>
+        </div>
+
+        <!-- Back to booking -->
+        <div class="text-center">
+            <a href="{{ path('app_user_bookings_journal') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la réservation
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Payment method selection
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            const paymentSections = document.querySelectorAll('.payment-section');
+            const paymentMethodInput = document.getElementById('payment_method');
+
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    // Remove active class from all methods
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    // Add active class to clicked method
+                    this.classList.add('active');
+                    
+                    // Hide all payment sections
+                    paymentSections.forEach(section => {
+                        section.style.display = 'none';
+                        section.style.animation = 'none';
+                    });
+                    
+                    // Show selected payment section with animation
+                    const selectedMethod = this.dataset.method;
+                    paymentMethodInput.value = selectedMethod;
+                    
+                    const targetSection = document.getElementById(selectedMethod + '-payment');
+                    if (targetSection) {
+                        setTimeout(() => {
+                            targetSection.style.display = 'block';
+                            targetSection.style.animation = 'fadeInUp 0.5s ease-out';
+                        }, 100);
+                    }
+                });
+            });
+
+            // Card number formatting
+            const cardNumberInput = document.getElementById('card_number');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                    if (formattedValue.length <= 19) {
+                        e.target.value = formattedValue;
+                    } else {
+                        e.target.value = formattedValue.substr(0, 19);
+                    }
+                });
+            }
+
+            // Expiry date formatting
+            const expiryInput = document.getElementById('expiry_date');
+            if (expiryInput) {
+                expiryInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            // CVV validation
+            const cvvInput = document.getElementById('cvv');
+            if (cvvInput) {
+                cvvInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                });
+            }
+
+            // Form validation and submission
+            const paymentForm = document.getElementById('payment-form');
+            if (paymentForm) {
+                paymentForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent actual submission in demo
+                    
+                    const selectedMethod = paymentMethodInput.value;
+                    
+                    if (selectedMethod === 'card') {
+                        // Clear previous errors
+                        document.getElementById('card_number_error').textContent = '';
+                        document.getElementById('expiry_error').textContent = '';
+                        document.getElementById('cvv_error').textContent = '';
+                        
+                        // Validate card fields
+                        const cardNumber = document.getElementById('card_number').value.replace(/\s/g, '');
+                        const expiryDate = document.getElementById('expiry_date').value;
+                        const cvv = document.getElementById('cvv').value;
+                        
+                        let hasError = false;
+                        
+                        // Basic validation
+                        if (cardNumber.length < 13 || cardNumber.length > 19) {
+                            document.getElementById('card_number_error').textContent = 'Numéro de carte invalide';
+                            hasError = true;
+                        }
+                        
+                        if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+                            document.getElementById('expiry_error').textContent = 'Format MM/AA requis';
+                            hasError = true;
+                        }
+                        
+                        if (cvv.length < 3 || cvv.length > 4) {
+                            document.getElementById('cvv_error').textContent = 'CVV invalide';
+                            hasError = true;
+                        }
+                        
+                        if (hasError) {
+                            return;
+                        }
+                    }
+                    
+                    // Show loading state
+                    const submitBtn = document.getElementById('submit-payment');
+                    submitBtn.classList.add('loading');
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+                    
+                    // Simulate processing time
+                    setTimeout(() => {
+                        alert('Paiement simulé avec succès! (Demo)');
+                        submitBtn.classList.remove('loading');
+                        submitBtn.innerHTML = '<i class="fas fa-lock"></i> Payer {{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€';
+                    }, 2000);
+                });
+            }
+
+            // Add smooth hover effects to form controls
+            const formControls = document.querySelectorAll('.form-control');
+            formControls.forEach(control => {
+                control.addEventListener('focus', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                control.addEventListener('blur', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add floating animation to payment methods on hover
+            const methods = document.querySelectorAll('.payment-method');
+            methods.forEach(method => {
+                method.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateY(-8px) scale(1.02)';
+                    }
+                });
+                
+                method.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateY(0) scale(1)';
+                    }
+                });
+            });
+
+            // Parallax effect for floating elements
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const floatingElements = document.querySelectorAll('.floating-element');
+                
+                floatingElements.forEach((element, index) => {
+                    const speed = 0.5 + (index * 0.1);
+                    element.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+
+            // Add ripple effect to buttons
+            function createRipple(event) {
+                const button = event.currentTarget;
+                const circle = document.createElement('span');
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+                circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+                circle.classList.add('ripple');
+
+                const ripple = button.getElementsByClassName('ripple')[0];
+                if (ripple) {
+                    ripple.remove();
+                }
+
+                button.appendChild(circle);
+            }
+
+            const buttons = document.querySelectorAll('.btn-primary, .payment-method');
+            buttons.forEach(button => {
+                button.addEventListener('click', createRipple);
+            });
+        });
+
+        // Add ripple CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

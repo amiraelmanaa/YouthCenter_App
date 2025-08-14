@@ -60,6 +60,9 @@ public function updateTotalPrice(): void
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $user = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $Paid = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -213,6 +216,18 @@ public function updateTotalPrice(): void
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function isPaid(): ?bool
+    {
+        return $this->Paid;
+    }
+
+    public function setPaid(?bool $Paid): static
+    {
+        $this->Paid = $Paid;
 
         return $this;
     }
