@@ -597,6 +597,17 @@
             <ul class="nav-links">
                 <li><a href="{{ path('home') }}" class="nav-link">Home</a></li>
             </ul>
+            <li>
+                {% if app.user %}
+                    <a href="{{ path('app_user_bookings_journal') }}" class="nav-link">My Bookings</a>
+                {% else %}
+                    <a href="#" 
+                       class="nav-link" 
+                       onclick="alert('Please log in first to access your bookings.'); return false;">
+                        My Bookings
+                    </a>
+                {% endif %}
+            </li>
             
             {% if app.user %}
                 <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>

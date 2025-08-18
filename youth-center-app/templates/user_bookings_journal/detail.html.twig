@@ -123,122 +123,154 @@
             }
         }
 
-        /* Modern Navbar - YouthConnect Style */
+       /* Navbar Styles */
         .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
             z-index: 1000;
-            animation: slideDown 0.8s ease-out;
-            box-shadow: var(--shadow-sm);
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.1);
         }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .navbar.scrolled {
+            padding: 0.25rem 0;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px rgba(79, 70, 229, 0.1);
         }
 
-        .navbar-container {
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 1rem;
         }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
+        .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #312e81;
+            text-decoration: none;
             transition: all 0.3s ease;
         }
 
-        .navbar-brand:hover {
-            transform: scale(1.05);
-            color: var(--accent-color);
+        .logo:hover {
+            transform: scale(1.02);
         }
 
-        .navbar-brand::before {
-            content: 'YC';
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.75rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding: 0.5rem;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            box-shadow: var(--shadow-md);
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        .navbar-nav {
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .logo:hover .logo-icon::before {
+            animation: shine 0.6s ease-in-out;
+            opacity: 1;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .nav-link {
-            color: var(--text-secondary);
+            color: #374151;
+            font-size: 0.9rem;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
             position: relative;
-            padding: 0.5rem 0;
+            padding: 0.3rem 0;
         }
 
         .nav-link:hover {
-            color: var(--primary-color);
-            transform: translateY(-2px);
-            text-decoration: none;
+            color: #4f46e5;
         }
 
-        .nav-link.active {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .nav-link.active::after {
+        .nav-link::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
+            width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            border-radius: 2px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            transition: width 0.3s ease;
         }
 
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        .nav-link:hover::after {
+            width: 100%;
         }
 
-        .logout-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        .login-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
             padding: 0.5rem 1.5rem;
-            border-radius: 20px;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            box-shadow: var(--shadow-md);
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
         }
 
-        .logout-btn:hover {
+        .login-btn:hover {
+            background: white;
+            color: #4f46e5;
+            border-color: #4f46e5;
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            color: white;
-            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
         }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #374151;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
 
         /* Enhanced Header Section */
         .detail-header {
@@ -287,6 +319,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             font-weight: 500;
+            margin-top: 2rem;
         }
 
         .back-button:hover {
@@ -940,23 +973,35 @@
         <div class="floating-shape">💫</div>
     </div>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="{{ path('home') }}" class="navbar-brand">
+ <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">YC</div>
                 YouthConnect
             </a>
-             <ul class="navbar-nav">
-                <li><a href="{{ path('home') }}" class="nav-link">Home</a></li>
-                <li><a href="#" class="nav-link active">My Bookings</a></li>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{{ path('home') }}"  class="nav-link">Home</a></li>
                 <li>
                 {% if app.user %}
-                 <a href="{{ path('app_logout') }}" class="logout-btn">Logout</a>
+                    <a href="{{ path('app_user_bookings_journal') }}" class="nav-link">My Bookings</a>
+                {% else %}
+                    <a href="#" 
+                       class="nav-link" 
+                       onclick="alert('Please log in first to access your bookings.'); return false;">
+                        My Bookings
+                    </a>
+                {% endif %}
+            </li>
+                <li>
+                {% if app.user %}
+                 <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
                  {% else %}
                   <a href="{{ path('app_register') }}" class="login-btn">Login</a>
                   {% endif %}
                 </li>
             </ul>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
         </div>
     </nav>
 
