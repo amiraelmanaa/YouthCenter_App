@@ -618,7 +618,7 @@
             
             <div class="booking-form">
                 <form id="search-form" method="POST">
-    <input type="hidden" name="search" value="1">
+                    <input type="hidden" name="search" value="1">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="start_date">
@@ -726,7 +726,7 @@ document.getElementById('search-form').addEventListener('submit', function(e) {
         return;
     }
 
-    // Fixed URL to include centerId
+    // URL to include centerId
     fetch(`/reservation/${centerId}?start_date=${startDate}&end_date=${endDate}&guests=${guests}&is_group=${isGroup}`, {
         headers: {
             'X-Requested-With': 'XMLHttpRequest',

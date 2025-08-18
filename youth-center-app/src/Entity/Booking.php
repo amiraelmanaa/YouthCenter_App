@@ -63,6 +63,9 @@ public function updateTotalPrice(): void
     #[ORM\Column(nullable: true)]
     private ?bool $Paid = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Payment_Method = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -228,6 +231,18 @@ public function updateTotalPrice(): void
     public function setPaid(?bool $Paid): static
     {
         $this->Paid = $Paid;
+
+        return $this;
+    }
+
+    public function getPaymentMethod(): ?string
+    {
+        return $this->Payment_Method;
+    }
+
+    public function setPaymentMethod(?string $Payment_Method): static
+    {
+        $this->Payment_Method = $Payment_Method;
 
         return $this;
     }

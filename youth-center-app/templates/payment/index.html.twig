@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement - Réservation Premium</title>
+    <title>Payment - Premium Booking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -350,6 +350,11 @@
             transform: translateY(-2px);
         }
 
+        .form-control.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -414,6 +419,12 @@
             transform: translateY(-1px);
         }
 
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-secondary {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
@@ -463,18 +474,46 @@
             font-size: 0.85rem;
             margin-top: 0.5rem;
             display: block;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .error.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .alert {
             padding: 1rem 1.5rem;
             border-radius: 12px;
             margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .alert-info {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
             border: 1px solid rgba(59, 130, 246, 0.2);
             color: #3b82f6;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #059669;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.1));
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #dc2626;
         }
 
         .form-check {
@@ -496,6 +535,44 @@
             color: #64748b;
             cursor: pointer;
             line-height: 1.5;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-spinner {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #8b5cf6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Mobile Responsive */
@@ -540,28 +617,86 @@
             scroll-behavior: smooth;
         }
 
-        /* Loading animation for submit button */
-        .btn-primary.loading {
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
             pointer-events: none;
         }
 
-        .btn-primary.loading::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Success animation */
+        .success-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: successSlide 0.8s ease-out;
+        }
+
+        .success-content {
+            text-align: center;
+            color: white;
+            animation: successBounce 1s ease-out 0.3s both;
+        }
+
+        .success-content i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: checkmarkDraw 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes successSlide {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes successBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes checkmarkDraw {
+            0% { transform: scale(0) rotate(45deg); }
+            50% { transform: scale(1.2) rotate(45deg); }
+            100% { transform: scale(1) rotate(0deg); }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <h3 style="color: #4c1d95; margin: 0;">Processing payment...</h3>
+            <p style="color: #64748b; margin: 0.5rem 0 0 0;">Please wait</p>
+        </div>
+    </div>
+
+    <!-- Success Animation -->
+    <div class="success-animation" id="success-animation">
+        <div class="success-content">
+            <i class="fas fa-check-circle"></i>
+            <h2>Payment successful!</h2>
+            <p>Redirecting...</p>
+        </div>
+    </div>
+
     <!-- Floating Background Elements -->
     <div class="floating-bg">
         <div class="floating-element"></div>
@@ -572,41 +707,43 @@
     </div>
 
     <div class="payment-container">
-        <h1>Finaliser votre réservation</h1>
+        <!-- Alert Container for AJAX messages -->
+        <div id="alert-container"></div>
+
+        <h1>Complete your booking</h1>
         
         <!-- Booking Summary -->
         <div class="booking-summary">
-            <h3>Résumé de la réservation #{{ booking.id }}</h3>
+            <h3>Booking Summary #{{ booking.id }}</h3>
             <div class="booking-info">
                 <div>
-                    <p><strong>Nom du client:</strong> {{ booking.guestName }} {{ booking.guestLastName }}</p>
+                    <p><strong>Guest name:</strong> {{ booking.guestName }} {{ booking.guestLastName }}</p>
                     <p><strong>Email:</strong> {{ booking.email }}</p>
-                    <p><strong>Âge:</strong> {{ booking.age }} ans</p>
-                    <p><strong>Nombre d'invités:</strong> {{ booking.guestsCount }}</p>
+                    <p><strong>Age:</strong> {{ booking.age }} years</p>
+                    <p><strong>Number of guests:</strong> {{ booking.guestsCount }}</p>
                 </div>
                 <div>
-                    <p><strong>Chambre:</strong> {{ booking.room.name ?? 'N/A' }}</p>
-                    <p><strong>Date d'arrivée:</strong> {{ booking.startDate|date('d/m/Y') }}</p>
-                    <p><strong>Date de départ:</strong> {{ booking.endDate|date('d/m/Y') }}</p>
-                    <p><strong>Nombre de nuits:</strong> {{ booking.calculateNights(booking.startDate, booking.endDate) }}</p>
+                    <p><strong>Check-in date:</strong> {{ booking.startDate|date('d/m/Y') }}</p>
+                    <p><strong>Check-out date:</strong> {{ booking.endDate|date('d/m/Y') }}</p>
+                    <p><strong>Number of nights:</strong> {{ booking.calculateNights(booking.startDate, booking.endDate) }}</p>
                 </div>
             </div>
             
             <div class="price-breakdown">
                 <div class="price-row">
-                    <span>Prix par nuit:</span>
+                    <span>Price per night:</span>
                     <span>{{ booking.room.pricePerNight ?? 0 }}€</span>
                 </div>
                 <div class="price-row">
-                    <span>Nombre de nuits:</span>
+                    <span>Number of nights:</span>
                     <span>{{ booking.calculateNights(booking.startDate, booking.endDate) }}</span>
                 </div>
                 <div class="price-row">
-                    <span>Taxes et frais:</span>
+                    <span>Taxes and fees:</span>
                     <span>{{ (booking.totalPrice * 0.1)|number_format(2) }}€</span>
                 </div>
                 <div class="total-amount">
-                    <span>Total à payer:</span>
+                    <span>Total to pay:</span>
                     <span>{{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€</span>
                 </div>
             </div>
@@ -614,16 +751,16 @@
 
         <!-- Payment Form -->
         <div class="payment-form">
-            <h3>Informations de paiement</h3>
+            <h3>Payment information</h3>
             
-            <form method="POST" action="{{ path('payment_booking', {'id': booking.id}) }}" id="payment-form">
+            <form id="payment-form" novalidate>
                 <!-- Payment Method Selection -->
                 <div class="form-group">
-                    <label>Méthode de paiement</label>
+                    <label>Payment method</label>
                     <div class="payment-methods">
                         <div class="payment-method active" data-method="card">
                             <i class="fas fa-credit-card"></i>
-                            <div>Carte bancaire</div>
+                            <div>Credit card</div>
                         </div>
                         <div class="payment-method" data-method="paypal">
                             <i class="fab fa-paypal"></i>
@@ -631,7 +768,7 @@
                         </div>
                         <div class="payment-method" data-method="bank">
                             <i class="fas fa-university"></i>
-                            <div>Virement</div>
+                            <div>Bank transfer</div>
                         </div>
                     </div>
                     <input type="hidden" name="payment_method" id="payment_method" value="card">
@@ -640,13 +777,14 @@
                 <!-- Card Payment Form -->
                 <div id="card-payment" class="payment-section">
                     <div class="form-group">
-                        <label for="card_holder">Nom du titulaire de la carte *</label>
+                        <label for="card_holder">Cardholder name *</label>
                         <input type="text" class="form-control" id="card_holder" name="card_holder" 
                                value="{{ booking.guestName }} {{ booking.guestLastName }}" required>
+                        <span class="error" id="card_holder_error"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="card_number">Numéro de carte *</label>
+                        <label for="card_number">Card number *</label>
                         <input type="text" class="form-control" id="card_number" name="card_number" 
                                placeholder="1234 5678 9012 3456" maxlength="19" required>
                         <span class="error" id="card_number_error"></span>
@@ -654,13 +792,13 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="expiry_date">Date d'expiration *</label>
+                            <label for="expiry_date">Expiry date *</label>
                             <input type="text" class="form-control" id="expiry_date" name="expiry_date" 
-                                   placeholder="MM/AA" maxlength="5" required>
-                            <span class="error" id="expiry_error"></span>
+                                   placeholder="MM/YY" maxlength="5" required>
+                            <span class="error" id="expiry_date_error"></span>
                         </div>
                         <div class="form-group">
-                            <label for="cvv">Code CVV *</label>
+                            <label for="cvv">CVV code *</label>
                             <input type="text" class="form-control" id="cvv" name="cvv" 
                                    placeholder="123" maxlength="4" required>
                             <span class="error" id="cvv_error"></span>
@@ -671,54 +809,59 @@
                 <!-- PayPal Payment -->
                 <div id="paypal-payment" class="payment-section" style="display: none;">
                     <p style="color: #64748b; text-align: center; margin-bottom: 1.5rem;">
-                        Vous serez redirigé vers PayPal pour finaliser votre paiement en toute sécurité.
+                        You will be redirected to PayPal to complete your payment securely.
                     </p>
                     <div class="form-group">
-                        <label for="paypal_email">Email PayPal</label>
+                        <label for="paypal_email">PayPal email *</label>
                         <input type="email" class="form-control" id="paypal_email" name="paypal_email" 
-                               value="{{ booking.email }}">
+                               value="{{ booking.email }}" required>
+                        <span class="error" id="paypal_email_error"></span>
                     </div>
                 </div>
 
                 <!-- Bank Transfer -->
                 <div id="bank-payment" class="payment-section" style="display: none;">
                     <p style="color: #64748b; text-align: center; margin-bottom: 1.5rem;">
-                        Vous recevrez les détails du virement bancaire par email après confirmation.
+                        You will receive bank transfer details by email after confirmation.
                     </p>
-                    <div class="alert alert-info">
-                        <strong>Note:</strong> Votre réservation sera confirmée après réception du paiement (2-3 jours ouvrés).
+                    <div class="alert alert-info show">
+                        <strong>Note:</strong> Your booking will be confirmed after payment is received (2-3 business days).
                     </div>
                 </div>
 
                 <!-- Billing Address -->
-                <h4 style="color: #4c1d95; margin: 2rem 0 1.5rem 0; font-weight: 600;">Adresse de facturation</h4>
+                <h4 style="color: #4c1d95; margin: 2rem 0 1.5rem 0; font-weight: 600;">Billing address</h4>
                 
                 <div class="form-group">
-                    <label for="billing_address">Adresse *</label>
+                    <label for="billing_address">Address *</label>
                     <input type="text" class="form-control" id="billing_address" name="billing_address" required>
+                    <span class="error" id="billing_address_error"></span>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="billing_city">Ville *</label>
+                        <label for="billing_city">City *</label>
                         <input type="text" class="form-control" id="billing_city" name="billing_city" required>
+                        <span class="error" id="billing_city_error"></span>
                     </div>
                     <div class="form-group">
-                        <label for="billing_zip">Code postal *</label>
+                        <label for="billing_zip">Postal code *</label>
                         <input type="text" class="form-control" id="billing_zip" name="billing_zip" required>
+                        <span class="error" id="billing_zip_error"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="billing_country">Pays *</label>
+                    <label for="billing_country">Country *</label>
                     <select class="form-control" id="billing_country" name="billing_country" required>
-                        <option value="">Sélectionnez un pays</option>
+                        <option value="">Select a country</option>
                         <option value="FR" selected>France</option>
-                        <option value="BE">Belgique</option>
-                        <option value="CH">Suisse</option>
+                        <option value="BE">Belgium</option>
+                        <option value="CH">Switzerland</option>
                         <option value="CA">Canada</option>
-                        <option value="US">États-Unis</option>
+                        <option value="US">United States</option>
                     </select>
+                    <span class="error" id="billing_country_error"></span>
                 </div>
 
                 <!-- Terms and Conditions -->
@@ -726,37 +869,38 @@
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
                         <label class="form-check-label" for="terms">
-                            <p>terms and conds</p>
+                            I accept the <a href="#" style="color: #8b5cf6; text-decoration: underline;">terms and conditions</a> and the <a href="#" style="color: #8b5cf6; text-decoration: underline;">privacy policy</a>
                         </label>
                     </div>
+                    <span class="error" id="terms_error"></span>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="form-group">
                     <button type="submit" class="btn-primary" id="submit-payment">
-                        <i class="fas fa-lock"></i> Payer {{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€
+                        <i class="fas fa-lock"></i> Pay {{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€
                     </button>
                 </div>
 
                 <!-- Security Info -->
                 <div class="security-info">
                     <i class="fas fa-shield-alt"></i>
-                    <strong>Paiement sécurisé</strong><br>
-                    Vos informations de paiement sont protégées par un cryptage SSL 256 bits. 
-                    Nous ne stockons aucune information de carte bancaire sur nos serveurs.
+                    <strong>Secure payment</strong><br>
+                    Your payment information is protected by 256-bit SSL encryption. 
+                    We do not store any credit card information on our servers.
                 </div>
 
                 <!-- Hidden fields -->
                 <input type="hidden" name="booking_id" value="{{ booking.id }}">
                 <input type="hidden" name="amount" value="{{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2, '.', '') }}">
-                {{ csrf_token('payment_' ~ booking.id) }}
+                <input type="hidden" name="_token" value="{{ csrf_token('payment_' ~ booking.id) }}">
             </form>
         </div>
 
         <!-- Back to booking -->
         <div class="text-center">
             <a href="{{ path('app_user_bookings_journal') }}" class="btn-secondary">
-                <i class="fas fa-arrow-left"></i> Retour à la réservation
+                <i class="fas fa-arrow-left"></i> Back to bookings
             </a>
         </div>
     </div>
@@ -767,6 +911,15 @@
             const paymentMethods = document.querySelectorAll('.payment-method');
             const paymentSections = document.querySelectorAll('.payment-section');
             const paymentMethodInput = document.getElementById('payment_method');
+            const submitBtn = document.getElementById('submit-payment');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const successAnimation = document.getElementById('success-animation');
+            const alertContainer = document.getElementById('alert-container');
+
+            // AJAX Configuration
+            const BOOKING_ID = {{ booking.id }};
+            const API_URL = `{{ path('api_payment_booking', {'id': booking.id}) }}`;
+            const TOTAL_AMOUNT = '{{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€';
 
             paymentMethods.forEach(method => {
                 method.addEventListener('click', function() {
@@ -792,8 +945,96 @@
                             targetSection.style.animation = 'fadeInUp 0.5s ease-out';
                         }, 100);
                     }
+
+                    // Update required fields based on payment method
+                    updateRequiredFields(selectedMethod);
+                    
+                    // Clear all previous error messages
+                    clearAllErrors();
+                    
+                    // Update submit button text
+                    updateSubmitButtonText(selectedMethod);
                 });
             });
+
+            function updateRequiredFields(method) {
+                // Remove required from all payment-specific fields
+                document.querySelectorAll('#card-payment input, #paypal-payment input').forEach(input => {
+                    input.required = false;
+                });
+
+                // Add required to relevant fields
+                if (method === 'card') {
+                    document.querySelectorAll('#card-payment input[type="text"]').forEach(input => {
+                        input.required = true;
+                    });
+                } else if (method === 'paypal') {
+                    document.getElementById('paypal_email').required = true;
+                }
+            }
+            
+            function updateSubmitButtonText(method) {
+                switch(method) {
+                    case 'card':
+                        submitBtn.innerHTML = '<i class="fas fa-credit-card"></i> Pay ' + TOTAL_AMOUNT;
+                        break;
+                    case 'paypal':
+                        submitBtn.innerHTML = '<i class="fab fa-paypal"></i> Pay with PayPal ' + TOTAL_AMOUNT;
+                        break;
+                    case 'bank':
+                        submitBtn.innerHTML = '<i class="fas fa-university"></i> Confirm bank transfer ' + TOTAL_AMOUNT;
+                        break;
+                }
+            }
+            
+            function clearAllErrors() {
+                document.querySelectorAll('.error').forEach(error => {
+                    error.textContent = '';
+                    error.classList.remove('show');
+                });
+                document.querySelectorAll('.form-control').forEach(control => {
+                    control.classList.remove('error');
+                });
+            }
+            
+            function showError(fieldId, message) {
+                const errorElement = document.getElementById(fieldId + '_error');
+                const fieldElement = document.getElementById(fieldId);
+                
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.classList.add('show');
+                }
+                
+                if (fieldElement) {
+                    fieldElement.classList.add('error');
+                }
+            }
+
+            function showAlert(type, message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+                
+                alertContainer.innerHTML = '';
+                alertContainer.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    alertDiv.classList.add('show');
+                }, 100);
+
+                // Auto-hide after 5 seconds for non-error messages
+                if (type !== 'error') {
+                    setTimeout(() => {
+                        alertDiv.style.opacity = '0';
+                        setTimeout(() => {
+                            if (alertDiv.parentNode) {
+                                alertDiv.parentNode.removeChild(alertDiv);
+                            }
+                        }, 500);
+                    }, 5000);
+                }
+            }
 
             // Card number formatting
             const cardNumberInput = document.getElementById('card_number');
@@ -806,6 +1047,8 @@
                     } else {
                         e.target.value = formattedValue.substr(0, 19);
                     }
+                    
+                    clearFieldError('card_number');
                 });
             }
 
@@ -818,6 +1061,8 @@
                         value = value.substring(0, 2) + '/' + value.substring(2, 4);
                     }
                     e.target.value = value;
+                    
+                    clearFieldError('expiry_date');
                 });
             }
 
@@ -826,63 +1071,255 @@
             if (cvvInput) {
                 cvvInput.addEventListener('input', function(e) {
                     e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    clearFieldError('cvv');
+                });
+            }
+            
+            // PayPal email validation
+            const paypalEmailInput = document.getElementById('paypal_email');
+            if (paypalEmailInput) {
+                paypalEmailInput.addEventListener('input', function(e) {
+                    clearFieldError('paypal_email');
                 });
             }
 
-            // Form validation and submission
+            // Clear errors on input for billing fields
+            ['billing_address', 'billing_city', 'billing_zip', 'billing_country', 'card_holder'].forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        clearFieldError(fieldName);
+                    });
+                }
+            });
+            
+            // Terms checkbox validation
+            const termsCheckbox = document.getElementById('terms');
+            if (termsCheckbox) {
+                termsCheckbox.addEventListener('change', function() {
+                    clearFieldError('terms');
+                });
+            }
+
+            function clearFieldError(fieldName) {
+                const errorElement = document.getElementById(fieldName + '_error');
+                const fieldElement = document.getElementById(fieldName);
+                
+                if (errorElement) {
+                    errorElement.textContent = '';
+                    errorElement.classList.remove('show');
+                }
+                if (fieldElement) {
+                    fieldElement.classList.remove('error');
+                }
+            }
+
+            // AJAX Form Submission
             const paymentForm = document.getElementById('payment-form');
             if (paymentForm) {
-                paymentForm.addEventListener('submit', function(e) {
-                    e.preventDefault(); // Prevent actual submission in demo
+                paymentForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
                     
+                    // Clear previous errors and alerts
+                    clearAllErrors();
+                    alertContainer.innerHTML = '';
+                    
+                    // Client-side validation
                     const selectedMethod = paymentMethodInput.value;
+                    let hasError = false;
                     
                     if (selectedMethod === 'card') {
-                        // Clear previous errors
-                        document.getElementById('card_number_error').textContent = '';
-                        document.getElementById('expiry_error').textContent = '';
-                        document.getElementById('cvv_error').textContent = '';
-                        
-                        // Validate card fields
-                        const cardNumber = document.getElementById('card_number').value.replace(/\s/g, '');
-                        const expiryDate = document.getElementById('expiry_date').value;
-                        const cvv = document.getElementById('cvv').value;
-                        
-                        let hasError = false;
-                        
-                        // Basic validation
-                        if (cardNumber.length < 13 || cardNumber.length > 19) {
-                            document.getElementById('card_number_error').textContent = 'Numéro de carte invalide';
-                            hasError = true;
+                        hasError = validateCardPayment() || hasError;
+                    } else if (selectedMethod === 'paypal') {
+                        hasError = validatePayPalPayment() || hasError;
+                    }
+                    
+                    hasError = validateBillingFields() || hasError;
+                    
+                    if (!termsCheckbox.checked) {
+                        showError('terms', 'Please accept the terms and conditions to continue.');
+                        hasError = true;
+                    }
+                    
+                    if (hasError) {
+                        // Scroll to first error
+                        const firstError = document.querySelector('.error.show');
+                        if (firstError) {
+                            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
-                        
-                        if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-                            document.getElementById('expiry_error').textContent = 'Format MM/AA requis';
-                            hasError = true;
-                        }
-                        
-                        if (cvv.length < 3 || cvv.length > 4) {
-                            document.getElementById('cvv_error').textContent = 'CVV invalide';
-                            hasError = true;
-                        }
-                        
-                        if (hasError) {
-                            return;
+                        return;
+                    }
+                    
+                    // Prepare payload
+                    const formData = new FormData(paymentForm);
+                    const payload = {};
+                    
+                    // Convert FormData to object
+                    for (let [key, value] of formData.entries()) {
+                        if (key === 'terms') {
+                            payload[key] = termsCheckbox.checked;
+                        } else {
+                            payload[key] = value;
                         }
                     }
                     
                     // Show loading state
-                    const submitBtn = document.getElementById('submit-payment');
-                    submitBtn.classList.add('loading');
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+                    showLoadingState();
                     
-                    // Simulate processing time
-                    setTimeout(() => {
-                        alert('Paiement simulé avec succès! (Demo)');
-                        submitBtn.classList.remove('loading');
-                        submitBtn.innerHTML = '<i class="fas fa-lock"></i> Payer {{ (booking.totalPrice + (booking.totalPrice * 0.1))|number_format(2) }}€';
-                    }, 2000);
+                    try {
+                        const response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        hideLoadingState();
+                        
+                        if (result.success) {
+                            // Show success animation
+                            showSuccessAnimation();
+                            
+                            // Redirect after animation
+                            setTimeout(() => {
+                                if (result.redirect_url) {
+                                    window.location.href = result.redirect_url;
+                                } else {
+                                    window.location.reload();
+                                }
+                            }, 2500);
+                            
+                        } else {
+                            // Handle validation errors
+                            if (result.errors) {
+                                Object.keys(result.errors).forEach(field => {
+                                    showError(field, result.errors[field]);
+                                });
+                                
+                                // Scroll to first error
+                                const firstError = document.querySelector('.error.show');
+                                if (firstError) {
+                                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                            }
+                            
+                            showAlert('error', result.message || 'An error occurred.');
+                        }
+                        
+                    } catch (error) {
+                        hideLoadingState();
+                        console.error('Payment error:', error);
+                        showAlert('error', 'Connection error. Please check your internet connection and try again.');
+                    }
                 });
+            }
+
+            function showLoadingState() {
+                loadingOverlay.style.display = 'flex';
+                submitBtn.disabled = true;
+                document.body.style.overflow = 'hidden';
+            }
+
+            function hideLoadingState() {
+                loadingOverlay.style.display = 'none';
+                submitBtn.disabled = false;
+                document.body.style.overflow = 'auto';
+            }
+
+            function showSuccessAnimation() {
+                successAnimation.style.display = 'flex';
+                setTimeout(() => {
+                    successAnimation.style.display = 'none';
+                }, 2000);
+            }
+            
+            function validateCardPayment() {
+                let hasError = false;
+                
+                const cardNumber = document.getElementById('card_number').value.replace(/\s/g, '');
+                const expiryDate = document.getElementById('expiry_date').value;
+                const cvv = document.getElementById('cvv').value;
+                const cardHolder = document.getElementById('card_holder').value.trim();
+                
+                // Validate card holder
+                if (!cardHolder) {
+                    showError('card_holder', 'Cardholder name is required.');
+                    hasError = true;
+                }
+                
+                // Validate card number
+                if (cardNumber.length < 13 || cardNumber.length > 19 || !/^\d+$/.test(cardNumber)) {
+                    showError('card_number', 'Invalid card number (13-19 digits).');
+                    hasError = true;
+                }
+                
+                // Validate expiry date
+                if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+                    showError('expiry_date', 'MM/YY format required.');
+                    hasError = true;
+                } else {
+                    const [month, year] = expiryDate.split('/');
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear() % 100;
+                    const currentMonth = currentDate.getMonth() + 1;
+                    
+                    if (parseInt(month) < 1 || parseInt(month) > 12) {
+                        showError('expiry_date', 'Invalid month (01-12).');
+                        hasError = true;
+                    } else if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+                        showError('expiry_date', 'Card expired.');
+                        hasError = true;
+                    }
+                }
+                
+                // Validate CVV
+                if (cvv.length < 3 || cvv.length > 4 || !/^\d+$/.test(cvv)) {
+                    showError('cvv', 'Invalid CVV (3-4 digits).');
+                    hasError = true;
+                }
+                
+                return hasError;
+            }
+            
+            function validatePayPalPayment() {
+                let hasError = false;
+                
+                const email = document.getElementById('paypal_email').value.trim();
+                
+                if (!email) {
+                    showError('paypal_email', 'PayPal email address is required.');
+                    hasError = true;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    showError('paypal_email', 'Invalid email format.');
+                    hasError = true;
+                }
+                
+                return hasError;
+            }
+            
+            function validateBillingFields() {
+                let hasError = false;
+                
+                const requiredFields = [
+                    { id: 'billing_address', name: 'Address' },
+                    { id: 'billing_city', name: 'City' },
+                    { id: 'billing_zip', name: 'Postal code' },
+                    { id: 'billing_country', name: 'Country' }
+                ];
+                
+                requiredFields.forEach(field => {
+                    const value = document.getElementById(field.id).value.trim();
+                    if (!value) {
+                        showError(field.id, field.name + ' is required.');
+                        hasError = true;
+                    }
+                });
+                
+                return hasError;
             }
 
             // Add smooth hover effects to form controls
@@ -948,28 +1385,58 @@
             buttons.forEach(button => {
                 button.addEventListener('click', createRipple);
             });
-        });
 
-        // Add ripple CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            .ripple {
-                position: absolute;
-                border-radius: 50%;
-                background-color: rgba(255, 255, 255, 0.6);
-                transform: scale(0);
-                animation: ripple-animation 0.6s linear;
-                pointer-events: none;
-            }
+            // Network error handling
+            window.addEventListener('online', function() {
+                showAlert('success', 'Connection restored.');
+            });
 
-            @keyframes ripple-animation {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
+            window.addEventListener('offline', function() {
+                showAlert('error', 'Internet connection lost. Check your connection.');
+            });
+
+            // Prevent form submission on Enter key in input fields (except submit button)
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        // Move to next field or submit if it's the last field
+                        const formElements = Array.from(paymentForm.querySelectorAll('input:not([type="hidden"]), select, button[type="submit"]'));
+                        const currentIndex = formElements.indexOf(this);
+                        const nextElement = formElements[currentIndex + 1];
+                        
+                        if (nextElement) {
+                            if (nextElement.type === 'submit') {
+                                nextElement.click();
+                            } else {
+                                nextElement.focus();
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Auto-focus first empty field
+            function focusFirstEmptyField() {
+                const fields = document.querySelectorAll('.form-control:not([type="hidden"])');
+                for (let field of fields) {
+                    if (field.style.display !== 'none' && field.offsetParent !== null && !field.value.trim()) {
+                        field.focus();
+                        break;
+                    }
                 }
             }
-        `;
-        document.head.appendChild(style);
+
+            // Focus first field when payment method changes
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    setTimeout(focusFirstEmptyField, 200);
+                });
+            });
+
+            // Initial focus
+            setTimeout(focusFirstEmptyField, 1000);
+        });
     </script>
 </body>
 </html>

@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Center;
 use App\Entity\User;
+use App\Entity\PayPal;
+use App\Entity\Virement;
+use App\Entity\CarteBancaire;
 use App\Entity\Activities;
 use App\Entity\CenterManager;
 use App\Entity\Pictures;
@@ -36,6 +39,10 @@ class DashboardController extends AbstractDashboardController
     $bookingUrl = $adminUrlGenerator->setController(BookingCrudController::class)->generateUrl();
     $techUrl = $adminUrlGenerator->setController(TechnicianCrudController::class)->generateUrl();
     $assignmentsUrl = $adminUrlGenerator->setController(AssignmentCrudController::class)->generateUrl();
+    $paypalUrl = $adminUrlGenerator->setController(PayPalCrudController::class)->generateUrl();
+    $virementUrl = $adminUrlGenerator->setController(VirementCrudController::class)->generateUrl();
+    $carteBancaireUrl = $adminUrlGenerator->setController(CarteBancaireCrudController::class)->generateUrl();
+
 
     
 
@@ -49,6 +56,10 @@ class DashboardController extends AbstractDashboardController
         'booking_crud_url' => $bookingUrl,
         'technician_crud_url' => $techUrl,
         'assignments_crud_url' => $assignmentsUrl,
+        'paypal_crud_url' => $paypalUrl,
+        'virement_crud_url' => $virementUrl,
+        'carte_bancaire_crud_url' => $carteBancaireUrl
+
     ]);
 }
 
@@ -70,6 +81,9 @@ class DashboardController extends AbstractDashboardController
          yield MenuItem::linkToCrud('Bookings', 'fas fa-calendar-check', Booking::class);
          yield MenuItem::linkToCrud('Technicians', 'fas fa-tools', Technician::class);
          yield MenuItem::linkToCrud('Assignments', 'fas fa-tasks', Assignment::class);
+         yield MenuItem::linkToCrud('PayPal', 'fas fa-credit-card', PayPal::class);
+         yield MenuItem::linkToCrud('Virement', 'fas fa-exchange-alt', Virement::class);
+         yield MenuItem::linkToCrud('Carte Bancaire', 'fas fa-credit-card', CarteBancaire::class);
          yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');
 
 
