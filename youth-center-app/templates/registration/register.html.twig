@@ -609,14 +609,18 @@ select.form-control:focus, .form-select:focus {
 
                 
                 <div class="checkbox-group">
-                    {{ form_widget(registrationForm.agreeTerms, {
-                        'attr': {'class': 'checkbox-input'}
-                    }) }}
-                    {{ form_label(registrationForm.agreeTerms, 'I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>', {
-                        'label_html': true,
-                        'attr': {'class': 'checkbox-label'}
-                    }) }}
+    {{ form_label(
+    registrationForm.agreeTerms,
+    'I agree to the <a href="' ~ path('app_loginterms') ~ '" class="terms-link">Terms of Service</a> and Privacy Policy',
+    {
+        'label_html': true,
+        'attr': {'class': 'checkbox-label'}
+    }
+    
+) }}
+
                 </div>
+               
                 {{ form_errors(registrationForm.agreeTerms) }}
                 
                 <button type="submit" class="btn-primary">
