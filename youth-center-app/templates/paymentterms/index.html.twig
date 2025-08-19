@@ -1,0 +1,370 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment Terms and Conditions{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .payment-terms-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .terms-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 3px solid #28a745;
+        }
+        .terms-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .terms-content h2 {
+            color: #2c3e50;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.6rem;
+            border-left: 4px solid #28a745;
+            padding-left: 1rem;
+        }
+        .terms-content h3 {
+            color: #495057;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+        }
+        .terms-content p {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: #6c757d;
+            text-align: justify;
+        }
+        .terms-content ul, .terms-content ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        .terms-content li {
+            margin-bottom: 0.75rem;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 5px solid #fdcb6e;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+        .warning-box strong {
+            color: #856404;
+        }
+        .info-box {
+            background-color: #d1ecf1;
+            border: 1px solid #b8daff;
+            border-left: 5px solid #17a2b8;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+        .info-box strong {
+            color: #0c5460;
+        }
+        .success-box {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-left: 5px solid #28a745;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+        .success-box strong {
+            color: #155724;
+        }
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: #f8f9fa;
+        }
+        .pricing-table th,
+        .pricing-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .pricing-table th {
+            background-color: #28a745;
+            color: white;
+            font-weight: 600;
+        }
+        .pricing-table tr:hover {
+            background-color: #e9ecef;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            margin: 0 0.75rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-outline-secondary {
+            background-color: transparent;
+            color: #6c757d;
+            border: 2px solid #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .payment-method {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        .last-updated {
+            font-style: italic;
+            color: #adb5bd;
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .currency-notice {
+            text-align: center;
+            font-weight: 600;
+            color: #495057;
+            margin: 1rem 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="payment-terms-container">
+    <div class="terms-header">
+        <h1>Payment Terms & Conditions</h1>
+        <p class="lead">Please review our payment policies and procedures before proceeding</p>
+        <div class="currency-notice">
+            All prices are in {{ currency|default('USD') }} unless otherwise specified
+        </div>
+    </div>
+
+    <div class="terms-content">
+        <div class="warning-box">
+            <strong>Important Notice:</strong> By proceeding with payment, you acknowledge that you have read, understood, and agree to be bound by these Payment Terms and Conditions. All sales are subject to these terms.
+        </div>
+
+        <h2>1. Payment Methods</h2>
+        <p>We accept the following payment methods:</p>
+        <div class="payment-methods">
+            <span class="payment-method">💳 Credit Cards (Visa, MasterCard, American Express)</span>
+            <span class="payment-method">💰 Debit Cards</span>
+            <span class="payment-method">🏦 Bank Transfer</span>
+            <span class="payment-method">💻 PayPal</span>
+            <span class="payment-method">🪙 Digital Wallets</span>
+        </div>
+        <p>
+            Payment processing is handled by our secure payment partners. We do not store your complete payment 
+            information on our servers. All transactions are encrypted and processed through PCI DSS compliant systems.
+        </p>
+
+        <h2>2. Pricing and Fees</h2>
+        <h3>Service Pricing</h3>
+        <p>
+            All prices displayed on our platform are current at the time of viewing. We reserve the right to 
+            modify pricing at any time, but changes will not affect orders already confirmed and paid for.
+        </p>
+
+        {% if pricing_table is defined %}
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>Service/Product</th>
+                    <th>Price</th>
+                    <th>Billing Cycle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in pricing_table %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.billing_cycle }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <h3>Additional Fees</h3>
+        <ul>
+            <li>Processing fees may apply for certain payment methods</li>
+            <li>International transaction fees may be charged by your bank</li>
+            <li>Currency conversion fees may apply for non-{{ currency|default('USD') }} transactions</li>
+            <li>Late payment fees: {{ late_fee|default('$25') }} after {{ grace_period|default('15 days') }}</li>
+        </ul>
+
+        <h2>3. Billing and Payment Processing</h2>
+        <h3>One-Time Payments</h3>
+        <p>
+            For one-time purchases, payment is due immediately upon order confirmation. Your order will be 
+            processed only after successful payment verification.
+        </p>
+
+        <h3>Recurring Payments</h3>
+        <p>
+            For subscription services, you authorize us to charge your selected payment method automatically 
+            on each billing cycle. Billing occurs on the same date each month/year unless otherwise specified.
+        </p>
+
+        <div class="info-box">
+            <strong>Automatic Renewal:</strong> Subscriptions automatically renew unless cancelled at least 
+            {{ cancellation_notice|default('24 hours') }} before the next billing cycle.
+        </div>
+
+        <h2>4. Failed Payments and Account Suspension</h2>
+        <p>In case of payment failure:</p>
+        <ol>
+            <li>We will attempt to process payment up to {{ retry_attempts|default('3') }} times over {{ retry_period|default('7 days') }}</li>
+            <li>You will receive email notifications for each failed attempt</li>
+            <li>After final failure, your account may be suspended</li>
+            <li>Additional fees may apply for failed payment processing</li>
+        </ol>
+
+        <h2>5. Refunds and Cancellations</h2>
+        <h3>Refund Policy</h3>
+        <p>
+            We offer refunds under the following conditions:
+        </p>
+        <ul>
+            <li><strong>Digital Services:</strong> {{ digital_refund_policy|default('7-day money-back guarantee for unused services') }}</li>
+            <li><strong>Physical Products:</strong> {{ physical_refund_policy|default('30-day return policy in original condition') }}</li>
+            <li><strong>Subscriptions:</strong> {{ subscription_refund_policy|default('Refund available for unused portion after cancellation') }}</li>
+        </ul>
+
+        <h3>Refund Processing</h3>
+        <p>
+            Approved refunds will be processed within {{ refund_processing_time|default('5-10 business days') }} 
+            to your original payment method. Please note that it may take additional time for your bank to 
+            process the refund.
+        </p>
+
+        <div class="success-box">
+            <strong>Easy Cancellation:</strong> You can cancel your subscription anytime from your account 
+            dashboard or by contacting our support team.
+        </div>
+
+        <h2>6. Taxes and Compliance</h2>
+        <p>
+            Applicable taxes (including but not limited to sales tax, VAT, GST) will be calculated and added 
+            to your total at checkout based on your billing address. You are responsible for any additional 
+            taxes imposed by your local jurisdiction.
+        </p>
+
+        <h2>7. Payment Security</h2>
+        <p>We implement industry-standard security measures:</p>
+        <ul>
+            <li>SSL encryption for all payment transactions</li>
+            <li>PCI DSS compliance for payment processing</li>
+            <li>Tokenization of stored payment information</li>
+            <li>Regular security audits and monitoring</li>
+            <li>Fraud detection and prevention systems</li>
+        </ul>
+
+        <h2>8. Dispute Resolution</h2>
+        <p>
+            If you have a payment dispute or billing question, please contact us immediately. We will 
+            investigate all disputes promptly and work towards a fair resolution. For credit card disputes, 
+            we encourage you to contact us before initiating a chargeback with your bank.
+        </p>
+
+        <h2>9. Changes to Payment Terms</h2>
+        <p>
+            We may update these payment terms periodically. Significant changes will be communicated via 
+            email at least {{ notice_period|default('30 days') }} before they take effect. Your continued 
+            use of our services after changes constitutes acceptance of the updated terms.
+        </p>
+
+        <h2>10. Contact Information</h2>
+        <p>For payment-related questions or support:</p>
+        <ul>
+            <li><strong>Billing Support:</strong> {{ billing_email|default('billing@example.com') }}</li>
+            <li><strong>Phone:</strong> {{ billing_phone|default('+1 (555) 123-4567') }}</li>
+            <li><strong>Live Chat:</strong> Available {{ support_hours|default('Monday-Friday 9AM-6PM EST') }}</li>
+            <li><strong>Mailing Address:</strong> {{ billing_address|default('123 Business Ave, Suite 100, City, State 12345') }}</li>
+        </ul>
+    </div>
+
+    
+
+    <div class="last-updated">
+        Last updated: {{ payment_terms_updated|default('January 2025') }} | 
+        Version: {{ terms_version|default('2.1') }}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function acceptTermsAndProceed() {
+            // Store acceptance in session (or send to backend)
+            if (confirm('By clicking OK, you confirm that you accept these Payment Terms and Conditions and wish to proceed with your payment.')) {
+                // Redirect to payment processing page
+                window.location.href = "{{ path('app_payment') }}";
+            }
+        }
+        
+        // Highlight important sections on scroll
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            document.querySelector('.terms-header').style.transform = `translateY(${rate}px)`;
+        });
+        
+        // Auto-expand sections when clicking on headers
+        document.querySelectorAll('h2, h3').forEach(header => {
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', function() {
+                this.style.color = this.style.color === 'rgb(40, 167, 69)' ? '#2c3e50' : '#28a745';
+            });
+        });
+    </script>
+{% endblock %}
