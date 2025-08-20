@@ -96,6 +96,16 @@ final class CenterManagerController extends AbstractController
         $booking->setStatus($action === 'accept' ? 'accepted' : 'declined');
         $em->flush();
 
+        if ($action === 'accept') {
+    $booking->setStatus('accepted');
+    $booking->setAcceptedAt(new \DateTimeImmutable());
+} else {
+    $booking->setStatus('declined');
+}
+$em->flush();
+
+
+
         return new JsonResponse(['success' => true]);
     }
 //technician assignment

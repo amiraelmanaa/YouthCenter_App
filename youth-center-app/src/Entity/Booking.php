@@ -66,6 +66,9 @@ public function updateTotalPrice(): void
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Payment_Method = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $acceptedAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -243,6 +246,18 @@ public function updateTotalPrice(): void
     public function setPaymentMethod(?string $Payment_Method): static
     {
         $this->Payment_Method = $Payment_Method;
+
+        return $this;
+    }
+
+    public function getAcceptedAt(): ?\DateTimeImmutable
+    {
+        return $this->acceptedAt;
+    }
+
+    public function setAcceptedAt(?\DateTimeImmutable $acceptedAt): static
+    {
+        $this->acceptedAt = $acceptedAt;
 
         return $this;
     }
