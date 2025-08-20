@@ -1081,12 +1081,12 @@
                             </h3>
                             {% if booking.room %}
                                 <div class="detail-row">
-                                    <span class="detail-label">Space Number</span>
-                                    <span class="detail-value">{{ booking.room.number ?? 'TBD' }}</span>
+                                    <span class="detail-label">Center Name</span>
+                                    <span class="detail-value">{{ booking.room.center ?? 'TBD' }}</span>
                                 </div>
                                 <div class="detail-row">
-                                    <span class="detail-label">Space Type</span>
-                                    <span class="detail-value">{{ booking.room.type ?? 'Multi-purpose' }}</span>
+                                    <span class="detail-label">Contact    </span>
+                                    <span class="detail-value">{{ booking.room.center.email?? 'Multi-purpose' }}</span>
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">Floor</span>
@@ -1173,15 +1173,19 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="action-buttons"> <a href="{{ path('payment_booking', { id: booking.id }) }}" class="btn btn-primary">
+                
+                <div class="action-buttons">
+                {% if booking.status|lower in ['accepted', 'Accepted'] %}
+                 <a href="{{ path('payment_booking', { id: booking.id }) }}" class="btn btn-primary">
                         Pay now and confirm your Booking
                     </a>
+                     {% endif %}
 
                     <a href="{{ path('app_user_bookings_journal') }}" class="btn btn-primary">
                         Back to All Bookings
                     </a>
                     
-                    {% if booking.status|lower in ['confirmed', 'pending'] %}
+                    {% if booking.status|lower in ['confirmed', 'accepted'] %}
                         <a href="#" class="btn btn-outline" onclick="window.print(); return false;">
                             Print Confirmation
                         </a>
