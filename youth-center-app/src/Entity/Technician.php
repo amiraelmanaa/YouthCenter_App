@@ -39,6 +39,9 @@ class Technician
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'technician')]
     private Collection $assignments;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $region = null;
+
     public function __construct()
     {
         $this->assignments = new ArrayCollection();
@@ -149,11 +152,23 @@ class Technician
     public function removeAssignment(Assignment $assignment): static
     {
         if ($this->assignments->removeElement($assignment)) {
-            // set the owning side to null (unless already changed)
+           
             if ($assignment->getTechnician() === $this) {
                 $assignment->setTechnician(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): static
+    {
+        $this->region = $region;
 
         return $this;
     }

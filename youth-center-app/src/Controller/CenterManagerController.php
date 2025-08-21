@@ -36,45 +36,53 @@ final class CenterManagerController extends AbstractController
     }
 
     #[Route('/center/manager', name: 'app_center_manager')]
-    public function index(): Response
-    {
-        $user = $this->security->getUser();
-        
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $centerManager = $this->em->getRepository(CenterManager::class)
-            ->findOneBy(['email' => $user->getUserIdentifier()]);
-
-        if (!$centerManager) {
-            throw $this->createNotFoundException('Center manager not found.');
-        }
-
-        $center = $centerManager->getCenter();
-
-        if (!$center) {
-            throw $this->createNotFoundException('No center assigned to this manager.');
-        }
-
-        $bookings = $this->em->getRepository(Booking::class)
-            ->createQueryBuilder('b')
-            ->join('b.room', 'r')
-            ->where('r.center = :center')
-            ->setParameter('center', $center)
-            ->orderBy('b.startDate', 'DESC')
-            ->getQuery()
-            ->getResult();
-
-        $technicalUsers = $this->em->getRepository(Technician::class)->findAll();
-
-        return $this->render('center_manager/index.html.twig', [
-            'center' => $center,
-            'manager' => $centerManager,
-            'bookings' => $bookings,
-            'technicians' => $technicalUsers,
-        ]);
+public function index(): Response
+{
+    $user = $this->security->getUser();
+    
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
     }
+
+    $centerManager = $this->em->getRepository(CenterManager::class)
+        ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+    if (!$centerManager) {
+        throw $this->createNotFoundException('Center manager not found.');
+    }
+
+    $center = $centerManager->getCenter();
+
+    if (!$center) {
+        throw $this->createNotFoundException('No center assigned to this manager.');
+    }
+
+    // fetch bookings
+    $bookings = $this->em->getRepository(Booking::class)
+        ->createQueryBuilder('b')
+        ->join('b.room', 'r')
+        ->where('r.center = :center')
+        ->setParameter('center', $center)
+        ->orderBy('b.startDate', 'DESC')
+        ->getQuery()
+        ->getResult();
+
+    // filter technicians whose region matches the center country
+    $technicalUsers = $this->em->getRepository(Technician::class)
+        ->createQueryBuilder('t')
+        ->where('t.region = :country')
+        ->setParameter('country', $center->getCountry())
+        ->getQuery()
+        ->getResult();
+
+    return $this->render('center_manager/index.html.twig', [
+        'center' => $center,
+        'manager' => $centerManager,
+        'bookings' => $bookings,
+        'technicians' => $technicalUsers,
+    ]);
+}
+
 
     #[Route('/manager/booking/{id}/{action}', name: 'manager_booking_action', methods: ['POST'])]
     public function handleBooking(

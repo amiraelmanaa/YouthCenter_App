@@ -583,6 +583,14 @@
                     <strong>Phone:</strong>
                     <input type="text" id="tech-phone" name="phone" value="{{ technician.phone ?? '' }}" disabled class="form-input" />
                 </p>
+                <p>
+                    <strong>Specialization :</strong>
+                    <input type="text" id="tech-specialization " name="spec" value="{{ technician.specialization  ?? '' }}" disabled class="form-input" />
+                </p>
+                <p>
+                    <strong>Region:</strong>
+                    <input type="text" id="tech-region" name="region" value="{{ technician.region ?? '' }}" disabled class="form-input" />
+                </p>
             </div>
 
             <div class="card-actions">
@@ -749,7 +757,10 @@ document.getElementById('profile-form').addEventListener('submit', function(e) {
     const formData = {
         name: document.getElementById('tech-name').value,
         email: document.getElementById('tech-email').value,
+        specialization : document.getElementById('tech-specialization ').value,
+        region: document.getElementById('tech-region').value,
         phone: document.getElementById('tech-phone').value
+
     };
 
     fetch('/technician/update-profile', {
