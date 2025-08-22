@@ -3,7 +3,7 @@
 namespace App\Controller;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-
+use App\Entity\Pictures;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -184,5 +184,198 @@ $em->flush();
         }
 
         return $this->redirectToRoute('app_center_manager');
+    }
+
+
+    #[Route('/manager/profile', name: 'manager_profile')]
+    public function profile(): Response
+    {
+        $user = $this->security->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $manager = $this->em->getRepository(CenterManager::class)
+            ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if (!$manager) {
+            throw $this->createNotFoundException('Center manager not found.');
+        }
+
+        $center = $manager->getCenter();
+
+        return $this->render('center_manager/profile.html.twig', [
+            'manager' => $manager,
+            'center' => $center,
+        ]);
+    }
+
+    #[Route('/manager/update-profile', name: 'manager_update_profile', methods: ['POST'])]
+    public function updateProfile(Request $request): Response
+    {
+        $user = $this->security->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $manager = $this->em->getRepository(CenterManager::class)
+            ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if (!$manager) {
+            throw $this->createNotFoundException('Center manager not found.');
+        }
+
+        // CSRF Token validation
+        $token = $request->request->get('token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('update-profile', $token))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('manager_profile');
+        }
+
+        $name = $request->request->get('name');
+        $lastname = $request->request->get('lastname');
+        $email = $request->request->get('email');
+
+        if ($name && $lastname && $email) {
+            $manager->setName($name);
+            $manager->setLastname($lastname);
+            $manager->setEmail($email);
+
+            $this->em->flush();
+            $this->addFlash('success', 'Profile updated successfully.');
+        } else {
+            $this->addFlash('error', 'All fields are required.');
+        }
+
+        return $this->redirectToRoute('manager_profile');
+    }
+
+    #[Route('/manager/update-center', name: 'manager_update_center', methods: ['POST'])]
+    public function updateCenter(Request $request): Response
+    {
+        $user = $this->security->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $manager = $this->em->getRepository(CenterManager::class)
+            ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if (!$manager || !$manager->getCenter()) {
+            throw $this->createNotFoundException('Center not found.');
+        }
+
+        // CSRF Token validation
+        $token = $request->request->get('token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('update-center', $token))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('manager_profile');
+        }
+
+        $center = $manager->getCenter();
+        
+        $name = $request->request->get('name');
+        $country = $request->request->get('country');
+        $city = $request->request->get('city');
+        $address = $request->request->get('address');
+        $phone = $request->request->get('phone');
+        $email = $request->request->get('email');
+        $description = $request->request->get('description');
+        $nbRooms = $request->request->get('nb_rooms');
+
+        if ($name && $country && $city && $address) {
+            $center->setName($name);
+            $center->setCountry($country);
+            $center->setCity($city);
+            $center->setAddress($address);
+            $center->setPhone($phone);
+            $center->setEmail($email);
+            $center->setDescription($description);
+            if ($nbRooms) {
+                $center->setNbRooms((int)$nbRooms);
+            }
+
+            $this->em->flush();
+            $this->addFlash('success', 'Center information updated successfully.');
+        } else {
+            $this->addFlash('error', 'Required fields: Name, Country, City, and Address.');
+        }
+
+        return $this->redirectToRoute('manager_profile');
+    }
+
+    #[Route('/manager/add-picture', name: 'manager_add_picture', methods: ['POST'])]
+    public function addPicture(Request $request): Response
+    {
+        $user = $this->security->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $manager = $this->em->getRepository(CenterManager::class)
+            ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if (!$manager || !$manager->getCenter()) {
+            throw $this->createNotFoundException('Center not found.');
+        }
+
+        // CSRF Token validation
+        $token = $request->request->get('token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('add-picture', $token))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('manager_profile');
+        }
+
+        $uploadedFile = $request->files->get('image');
+
+        if ($uploadedFile) {
+            $picture = new Pictures();
+            $picture->setImageFile($uploadedFile);
+            $picture->setCenterID($manager->getCenter());
+
+            $this->em->persist($picture);
+            $this->em->flush();
+
+            $this->addFlash('success', 'Picture added successfully.');
+        } else {
+            $this->addFlash('error', 'Please select an image file.');
+        }
+
+        return $this->redirectToRoute('manager_profile');
+    }
+
+    #[Route('/manager/delete-picture/{id}', name: 'manager_delete_picture', methods: ['POST'])]
+    public function deletePicture(int $id, Request $request): Response
+    {
+        $user = $this->security->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $manager = $this->em->getRepository(CenterManager::class)
+            ->findOneBy(['email' => $user->getUserIdentifier()]);
+
+        if (!$manager || !$manager->getCenter()) {
+            throw $this->createNotFoundException('Center not found.');
+        }
+
+        $picture = $this->em->getRepository(Pictures::class)->find($id);
+
+        if (!$picture || $picture->getCenterID() !== $manager->getCenter()) {
+            throw $this->createNotFoundException('Picture not found.');
+        }
+
+        // CSRF Token validation
+        $token = $request->request->get('token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('delete-picture', $token))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('manager_profile');
+        }
+
+        $this->em->remove($picture);
+        $this->em->flush();
+
+        $this->addFlash('success', 'Picture deleted successfully.');
+        return $this->redirectToRoute('manager_profile');
     }
 }

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Profile - YouthConnect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0; 
+            width: 100%; 
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #4f46e5;
+        }
+
+        .navbar-spacer {
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #312e81;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #4f46e5, #855ec7ff);
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: #4f46e5;
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .header {
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #2563eb;
+        }
+
+        .header h1 {
+            color: #1a202c;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-header h2 {
+            color: #1a202c;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-back {
+            background-color: #6b7280;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .pictures-section {
+            grid-column: 1 / -1;
+        }
+
+        .pictures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .picture-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            aspect-ratio: 1;
+        }
+
+        .picture-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 38, 38, 0.9);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: scale(1.1);
+        }
+
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .flash-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .flash-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">YC</div>
+                YouthConnect
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="{{ path('app_center_manager') }}">Dashboard</a></li>
+                <li><a href="{{ path('manager_profile') }}">Profile</a></li>
+                <li><a href="{{ path('home') }}">Home</a></li>
+                {% if app.user %}
+                    <li><a href="{{ path('app_logout') }}" class="login-btn">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ path('app_register') }}" class="login-btn">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="navbar-spacer"></div>
+
+    <div class="container">
+        <a href="{{ path('app_center_manager') }}" class="btn btn-back">← Back to Dashboard</a>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>Profile & Center Management</h1>
+            <p>Update your profile information and manage your center details</p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% for type, messages in app.flashes %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message flash-{{ type }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="profile-grid">
+            <!-- Manager Profile -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Your Profile</h2>
+                </div>
+                <div class="card-content">
+                    <form method="POST" action="{{ path('manager_update_profile') }}">
+                        <input type="hidden" name="token" value="{{ csrf_token('update-profile') }}">
+                        
+                        <div class="form-group">
+                            <label for="name">First Name</label>
+                            <input type="text" id="name" name="name" value="{{ manager.name }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" id="lastname" name="lastname" value="{{ manager.lastname }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="{{ manager.email }}" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Center Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Center Information</h2>
+                </div>
+                <div class="card-content">
+                    {% if center %}
+                        <form method="POST" action="{{ path('manager_update_center') }}">
+                            <input type="hidden" name="token" value="{{ csrf_token('update-center') }}">
+                            
+                            <div class="form-group">
+                                <label for="center-name">Center Name</label>
+                                <input type="text" id="center-name" name="name" value="{{ center.name }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" id="country" name="country" value="{{ center.country }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" value="{{ center.city }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" name="address" value="{{ center.address }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" name="phone" value="{{ center.phone }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="center-email">Center Email</label>
+                                <input type="email" id="center-email" name="email" value="{{ center.email }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nb_rooms">Number of Rooms</label>
+                                <input type="number" id="nb_rooms" name="nb_rooms" value="{{ center.nbRooms }}" min="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea id="description" name="description">{{ center.description }}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Update Center</button>
+                        </form>
+                    {% else %}
+                        <p>No center assigned to your account.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Pictures Management -->
+            {% if center %}
+            <div class="card pictures-section">
+                <div class="card-header">
+                    <h2>Center Pictures</h2>
+                </div>
+                <div class="card-content">
+                    <!-- Upload Form -->
+                    <form method="POST" action="{{ path('manager_add_picture') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="token" value="{{ csrf_token('add-picture') }}">
+                        
+                        <div class="upload-area" onclick="document.getElementById('image-upload').click()">
+                            <input type="file" id="image-upload" name="image" accept="image/*" style="display: none;" onchange="this.form.submit()">
+                            <p>📷 Click to upload a new picture</p>
+                            <small>Supported formats: JPG, PNG, GIF</small>
+                        </div>
+                    </form>
+
+                    <!-- Current Pictures -->
+                    {% if center.pictures|length > 0 %}
+                        <div class="pictures-grid">
+                            {% for picture in center.pictures %}
+                                <div class="picture-item">
+                                    <img src="{{ vich_uploader_asset(picture, 'imageFile') }}" alt="Center Picture">
+                                    <form method="POST" action="{{ path('manager_delete_picture', {id: picture.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="token" value="{{ csrf_token('delete-picture') }}">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this picture?')">×</button>
+                                    </form>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p style="text-align: center; color: #6b7280; margin-top: 20px;">No pictures uploaded yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
