@@ -585,7 +585,8 @@
                 </p>
                 <p>
                     <strong>Specialization :</strong>
-                    <input type="text" id="tech-specialization " name="spec" value="{{ technician.specialization  ?? '' }}" disabled class="form-input" />
+                    <input type="text" id="tech-specialization" name="specialization" value="{{ technician.specialization ?? '' }}" disabled class="form-input" />
+
                 </p>
                 <p>
                     <strong>Region:</strong>
@@ -757,7 +758,7 @@ document.getElementById('profile-form').addEventListener('submit', function(e) {
     const formData = {
         name: document.getElementById('tech-name').value,
         email: document.getElementById('tech-email').value,
-        specialization : document.getElementById('tech-specialization ').value,
+        specialization : document.getElementById('tech-specialization').value,
         region: document.getElementById('tech-region').value,
         phone: document.getElementById('tech-phone').value
 

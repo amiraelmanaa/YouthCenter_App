@@ -233,7 +233,7 @@ public function updateProfile(Request $request): JsonResponse
     try {
         $technician->setName($data['name']);
         $technician->setEmail($data['email']);
-        $technician->setspecialization ($data['specialization '] ?? null);
+        $technician->setSpecialization($data['specialization'] ?? null);
         $technician->setRegion($data['region'] ?? null);
         $technician->setPhone($data['phone'] ?? null);
 
