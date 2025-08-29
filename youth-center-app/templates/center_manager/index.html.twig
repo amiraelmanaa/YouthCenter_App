@@ -715,58 +715,7 @@
                 </div>
             </div>
 
-            <!-- Report Technical Problems -->
-            <div class="card">
-                <div class="card-header">
-                    <h2>Report Technical Issue</h2>
-                </div>
-                <div class="card-content">
-                    <form class="problem-form" onsubmit="reportProblem(event)">
-                        <div class="form-group">
-                            <label for="problem-title">Issue Title</label>
-                            <input type="text" id="problem-title" name="title" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="problem-category">Category</label>
-                            <select id="problem-category" name="category" required>
-                                <option value="">Select Category</option>
-                                <option value="electrical">Electrical</option>
-                                <option value="plumbing">Plumbing</option>
-                                <option value="hvac">HVAC</option>
-                                <option value="internet">Internet/WiFi</option>
-                                <option value="security">Security System</option>
-                                <option value="maintenance">General Maintenance</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="problem-priority">Priority Level</label>
-                            <select id="problem-priority" name="priority" required>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                                <option value="urgent">Urgent</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="problem-description">Description</label>
-                            <textarea id="problem-description" name="description" placeholder="Describe the technical problem in detail..." required></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="problem-location">Location</label>
-                            <input type="text" id="problem-location" name="location" placeholder="Room number, area, or specific location">
-                        </div>
-                        
-                        <button type="submit" class="btn btn-assign" style="width: 100%;">
-                            Submit Issue Report
-                        </button>
-                    </form>
-                </div>
-            </div>
+           
         </div>
     </div>
 
